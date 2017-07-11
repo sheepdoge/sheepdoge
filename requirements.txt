@@ -1,0 +1,2 @@
+sphinx>=1.0,<2.0
+sphinx-autobuild<=1.0
