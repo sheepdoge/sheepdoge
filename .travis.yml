@@ -1,0 +1,19 @@
+sudo: required
+
+language: python
+cache: pip
+
+python:
+  - '2.7'
+
+services:
+  - docker
+
+install:
+  - pip install -r requirements.txt
+  - python setup.py develop
+
+script:
+  - make lint
+  - make unit_tests
+  - make integration_tests
