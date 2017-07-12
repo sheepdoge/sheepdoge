@@ -1,5 +1,8 @@
 # sheepdog
 
+[![Build
+Status](https://travis-ci.org/mattjmcnaughton/sheepdog.svg?branch=master)](https://travis-ci.org/mattjmcnaughton/sheepdog)
+
 Manage your personal Unix machine(s) with [Ansible](https://www.ansible.com/)
 (aka [boxen](https://github.com/boxen/boxen) but for Ansible).
 
