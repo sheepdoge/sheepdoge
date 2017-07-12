@@ -1,8 +1,11 @@
 #!/bin/bash
+#
+# Run all sheepdog integration tests. Sheepdog has a number of different
+# integration tests, each one representing a different main feature through an
+# example.
 
-# Create docker image from docker file which runs pup/kennel
-# Ensure docker image has expected state
+set -e
 
-# Other integration tests could involve using `sheepdog_runner.py`?
+SD=$(dirname $0)
 
-echo 'hi'
+cd $SD/tests/trivial; /bin/bash ./run_test.sh;
