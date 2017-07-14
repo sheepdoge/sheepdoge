@@ -1,0 +1,13 @@
+---
+
+- name: sample-trivial-kennel
+  hosts: localhost
+
+  vars_files:
+    - var.yml
+    - bootstrap_vault.yml
+    - cron_vault.yml
+
+  roles:
+    - pup-base
+    - pup-trivial-sample
