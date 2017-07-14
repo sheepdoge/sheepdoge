@@ -1,0 +1,4 @@
+---
+- name: Tmp task to check ansible runs the base pup.
+  debug:
+    msg: "Running the base pup."

@@ -1,0 +1,15 @@
+---
+- name: Create the secret file if it does not already exist.
+  file:
+    state: touch
+    path: "{{ secret_file }}"
+    mode: u+rw
+
+- name: Write each of the secret values stored in the variables.
+  lineinfile:
+    path: "{{ secret_file }}"
+    line: "{{ item }}"
+  with_items:
+    - "{{ encrypted_boot }}"
+    - "{{ encrypted_nightly }}"
+    - "{{ unencrypted_var }}"

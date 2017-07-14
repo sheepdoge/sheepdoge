@@ -1,0 +1,7 @@
+---
+galaxy_info:
+  author: mattjmcnaughton
+  description: Base pup. All kennels must include this pup first.
+  license: Apache
+
+dependencies: []
