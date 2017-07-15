@@ -2,4 +2,6 @@
 
 docs/_build
 
+*.egg-info
+
 .venv
