@@ -4,7 +4,8 @@ import click
 
 from sheepdog.app import Sheepdog
 from sheepdog.config import Config
-from sheepdog.action import InstallAction, RunAction
+from sheepdog.action.install import InstallAction
+from sheepdog.action.run import RunAction
 
 ACTIONS = {
     'install': InstallAction,
