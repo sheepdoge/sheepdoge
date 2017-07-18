@@ -1,6 +1,3 @@
 ---
-{ name: sheepdog.pup-base, location: fs+../../pups/pup-base }
-{ name: sheepdog.pup-trivial-sample, location: fs+../../pups/pup-trivial-sample }
-
-# In the future, build the ability to specify pup file using git url.
-# { name: pup-base, location: git+https://github.com/mattjmcnaughton/pup-base.git }
+- { name: sheepdog.pup-base, location: fs+../../pups/pup-base }
+- { name: sheepdog.pup-trivial-sample, location: fs+../../pups/pup-trivial-sample }
