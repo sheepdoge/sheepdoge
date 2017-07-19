@@ -1,0 +1,3 @@
+[MESSAGES CONTROL]
+# disable (too-few-public-methods, missing-docstring)
+disable=R0903,C0111

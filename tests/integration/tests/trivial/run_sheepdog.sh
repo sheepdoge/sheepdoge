@@ -2,8 +2,6 @@
 #
 # Provision the docker container with sheepdog.
 
-DIR=/test
+DIR=/test/kennels/kennel-trivial-sample
 
-# @TODO(mattjmcnaughton) This should run `sheepdog install` and `sheepdog run`
-# with the proper kennel file.
-cd $DIR; ./sheepdog_runner.py
+cd $DIR; ../../sheepdog_runner.py install && ../../sheepdog_runner.py run

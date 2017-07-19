@@ -17,7 +17,10 @@ setup(
     url=GITHUB_URL,
     download_url='{}/tarball/{}'.format(GITHUB_URL, VERSION),
     keywords=['provisioning', 'automation'],
-    install_requires=[],
+    install_requires=[
+        'click>=6.0,<7.0',
+        'PyYaml>=3.0,<4.0'
+    ],
     packages=['sheepdog'],
     entry_points={
         'console_scripts': ['sheepdog = sheepdog.cli:main']
