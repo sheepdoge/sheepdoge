@@ -17,3 +17,6 @@ script:
   - make lint
   - make unit_tests
   - make integration_tests
+
+notifications:
+  email: false
