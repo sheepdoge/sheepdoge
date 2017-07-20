@@ -21,6 +21,7 @@ mkdir "$TMP_SCRATCH/kennels"
 cp -r "$SD/../../kennels/kennel-trivial-sample" "$TMP_SCRATCH/kennels/kennel-trivial-sample"
 
 mkdir "$TMP_SCRATCH/pups"
+cp -r "$SD/../../pups/pup-base" "$TMP_SCRATCH/pups/pup-base"
 cp -r "$SD/../../pups/pup-trivial-sample" "$TMP_SCRATCH/pups/pup-trivial-sample"
 cp "$SD/../../../../sheepdog_runner.py" "$TMP_SCRATCH/"
 cp "$SD/../../../../requirements.txt" "$TMP_SCRATCH/"

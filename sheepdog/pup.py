@@ -1,4 +1,6 @@
 from collections import namedtuple
+import os
+import shutil
 
 import yaml
 
@@ -75,12 +77,13 @@ class Pup(object):
 
         for entry in entries:
             pup_cls = _pup_types_to_classes()[entry.pup_type]
-            pup = pup_cls(entry.path)
+            pup = pup_cls(entry.name, entry.path)
             pups.append(pup)
 
         return pups
 
-    def __init__(self, path):
+    def __init__(self, name, path):
+        self._name = name
         self._path = path
         self._pup_dependencies = []
 
@@ -89,18 +92,24 @@ class Pup(object):
         # @TODO(mattjmcnaughton) Determine the best long term solution. Is it
         # defining `__repr__` or maybe `__eq__`?
         return {
+            'name': self._name,
             'pup_type': self.__class__,
             'path': self._path
         }
 
-    def install(self):
-        """Install all aspects of the pup."""
-        self._install_pup()
+    def install(self, install_dirs):
+        """Install all aspects of the pup.
+
+        :param install_dirs: The directories the pup needs to now about to
+        install itself in the correct location.
+        :type install_dirs: sheepdog.action.install.InstallDirectories
+        """
+        self._install_pup(install_dirs)
         self._install_pup_dependencies()
 
-    def _install_pup(self):
+    def _install_pup(self, install_dirs):
         """Download the pup onto the local file system."""
-        pass
+        raise NotImplementedError
 
     def _install_pup_dependencies(self):
         """Install the dependencies for the pup (i.e. other ansible roles or
@@ -127,18 +136,29 @@ class Pup(object):
 class FsPup(Pup):
     """A pup for which the source code is already on the local file system (we
     predominantly use this pup for testing).
+
+    All fs pupfile locations should be specified relative to the location of the
+    pupfile.
     """
-    pass
+    def _install_pup(self, install_dirs):
+        fs_pup_location = os.path.join(install_dirs.pupfile_dir, self._path)
+
+        pup_in_kennel_location = os.path.join(install_dirs.kennel_roles_dir,
+                                              self._name)
+
+        shutil.copytree(fs_pup_location, pup_in_kennel_location)
 
 class GitPup(Pup):
     """A pup for which the source lives in a remote git repo.
     """
-    pass
+    def _install_pup(self, install_dirs):
+        pass
 
 class GalaxyPup(Pup):
     """A pup for which the source lives on ansible-galaxy.
     """
-    pass
+    def _install_pup(self, install_dirs):
+        pass
 
 class PupDependency(object):
     """A base representation of a pup dependency - either a role or a pip
