@@ -2,10 +2,17 @@
 sheepdog.
 """
 
+import os
+
 DEFAULTS = {
     'pupfile_path': 'pupfile.yml',
     'kennel_roles_path': '.kennel_roles'
 }
+
+
+class SheepdogConfigurationNotFoundException(Exception):
+    pass
+
 
 class Config(object):
     """Sheepdog configuration parser.
@@ -28,4 +35,39 @@ class Config(object):
         :param field: The config field for which we want the value.
         :type field: str
         """
-        return self._defaults[field]
+        first_order_config_preferences = [
+            DEFAULTS
+        ]
+
+        for config in first_order_config_preferences:
+            if field in config:
+                return config[field]
+
+        second_order_config_preferences = [
+            self._calculate_configuration()
+        ]
+
+        for config in second_order_config_preferences:
+            if field in config:
+                return config[field]
+
+        raise SheepdogConfigurationNotFoundException(
+            '{} does not exit in configuration'.format(field))
+
+    def _calculate_configuration(self):
+        """Configuration values we use throughout the application, but don't
+        have the user specify.
+
+        Importantly, this can only access "first-order" config preferences,
+        or else we'll have infinite recursion.
+        """
+        pupfile_path = self.get('pupfile_path')
+        pupfile_dir = os.path.dirname(os.path.realpath(pupfile_path))
+
+        kennel_roles_path = self.get('kennel_roles_path')
+        abs_kennel_roles_dir = os.path.realpath(kennel_roles_path)
+
+        return {
+            'abs_pupfile_dir': pupfile_dir,
+            'abs_kennel_roles_dir': abs_kennel_roles_dir
+        }
