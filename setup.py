@@ -18,6 +18,7 @@ setup(
     download_url='{}/tarball/{}'.format(GITHUB_URL, VERSION),
     keywords=['provisioning', 'automation'],
     install_requires=[
+        'ansible>=2.0,<3.0',
         'click>=6.0,<7.0',
         'PyYaml>=3.0,<4.0'
     ],

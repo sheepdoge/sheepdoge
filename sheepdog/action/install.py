@@ -10,7 +10,6 @@ InstallDirectories = namedtuple('InstallDirectories', 'pupfile_dir kennel_roles_
 
 
 class InstallAction(Action):
-    """`sheepdog install`"""
     def __init__(self, *args, **kwargs):
         super(InstallAction, self).__init__(*args, **kwargs)
 
