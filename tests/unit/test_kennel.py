@@ -3,10 +3,17 @@ import os
 import tempfile
 import unittest
 
+from sheepdog.config import Config
 from sheepdog.kennel import Kennel
 
 
 class KennelTestCase(unittest.TestCase):
+    def setUp(self, *args, **kwargs):
+        super(KennelTestCase, self).setUp(*args, **kwargs)
+
+        Config.clear_config_singleton()
+        Config.initialize_config_singleton()
+
     def test_refresh_roles_dir_exists(self):
         """Test `refresh_roles` properly refreshes the kennel roles path
         when the kennel roles dir already exists."""
@@ -24,15 +31,7 @@ class KennelTestCase(unittest.TestCase):
         arguments to `subprocess.check_call`. We rely on the integration
         tests for checking the playbook ran successfully.
         """
-        mock_kennel_playbook_path = 'mock_kennel.yml'
-        mock_kennel_roles_path = '.mock_kennel_roles'
-        mock_kennel_config = {
-            'vault_password_file': 'mock_vault_password_file'
-        }
-
-        kennel = Kennel(mock_kennel_playbook_path, mock_kennel_roles_path,
-                        mock_kennel_config)
-
+        kennel = Kennel()
         kennel.run()
 
         self.assertEqual(mock_check_call.call_count, 1)
@@ -41,8 +40,8 @@ class KennelTestCase(unittest.TestCase):
         ansible_playbook_cmd = check_call_args[0]
 
         for expected_arg in {'ansible-playbook',
-                             'mock_kennel.yml',
-                             '--vault-password-file=mock_vault_password_file'}:
+                             'kennel.yml',
+                             '--vault-password-file'}:
             self.assertIn(expected_arg, ansible_playbook_cmd)
 
         self.assertTrue(check_call_kwargs['shell'])

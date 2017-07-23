@@ -1,13 +1,16 @@
 """Top-level module for sheepdog actions"""
 
+from sheepdog.config import Config
+
+
 class Action(object):
     """A base class for all actions.
 
     :param config: The configuration object for performing this action.
     :type config: sheepdog.config.Config
     """
-    def __init__(self, config):
-        self._config = config
+    def __init__(self, config=None):
+        self._config = config or Config.get_config_singleton()
 
     def run(self):
         """Execute this action."""
