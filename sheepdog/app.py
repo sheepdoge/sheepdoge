@@ -12,5 +12,4 @@ class Sheepdog(object):
 
     def run(self):
         """Execute an command given to `sheepdog`."""
-        print "running sheepdog"
         self._action.run()

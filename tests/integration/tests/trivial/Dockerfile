@@ -6,8 +6,8 @@ ADD assert_e2e_state.sh /test/assert_e2e_state.sh
 
 WORKDIR /test
 
-RUN chmod u+x /test/*.sh
-
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN python setup.py develop
+
+RUN chmod u+x /test/*.sh

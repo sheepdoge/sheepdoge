@@ -6,6 +6,8 @@ import os
 
 DEFAULTS = {
     'pupfile_path': 'pupfile.yml',
+    'kennel_playbook_path': 'kennel.yml',
+    'kennel_cfg_path': 'kennel.cfg',
     'kennel_roles_path': '.kennel_roles'
 }
 
