@@ -1,4 +1,3 @@
-from collections import namedtuple
 from configparser import SafeConfigParser
 import os
 import shutil
@@ -7,9 +6,6 @@ import subprocess
 
 class KennelRunException(Exception):
     pass
-
-
-KennelConfig = namedtuple('KennelConfig', 'vault_password_file')
 
 
 class Kennel(object):
