@@ -4,11 +4,14 @@ import shutil
 
 import yaml
 
+from sheepdog.config import Config
+
 # The character used in the `location` in the pupfile to split between
 # `pup_type` and `path`.
 LOCATION_SPLIT_CHAR = '+'
 
 PupfileEntry = namedtuple('PupfileEntry', 'name path pup_type')
+
 
 def _pup_types_to_classes():
     return {
@@ -17,8 +20,10 @@ def _pup_types_to_classes():
         'git': GitPup
     }
 
+
 class InvalidPupTypeException(Exception):
     pass
+
 
 class Pup(object):
     """Container of all pup related logic. Contains both static methods as well
@@ -82,10 +87,12 @@ class Pup(object):
 
         return pups
 
-    def __init__(self, name, path):
+    def __init__(self, name, path, config=None):
         self._name = name
         self._path = path
         self._pup_dependencies = []
+
+        self._config = config or Config.get_config_singleton()
 
     def to_dict(self):
         """Return a readable version of the pup"""
@@ -97,17 +104,13 @@ class Pup(object):
             'path': self._path
         }
 
-    def install(self, install_dirs):
+    def install(self):
         """Install all aspects of the pup.
-
-        :param install_dirs: The directories the pup needs to now about to
-        install itself in the correct location.
-        :type install_dirs: sheepdog.action.install.InstallDirectories
         """
-        self._install_pup(install_dirs)
+        self._install_pup()
         self._install_pup_dependencies()
 
-    def _install_pup(self, install_dirs):
+    def _install_pup(self):
         """Download the pup onto the local file system."""
         raise NotImplementedError
 
@@ -133,6 +136,7 @@ class Pup(object):
     def _get_role_dependency_file():
         return 'requirements.yaml'
 
+
 class FsPup(Pup):
     """A pup for which the source code is already on the local file system (we
     predominantly use this pup for testing).
@@ -140,25 +144,29 @@ class FsPup(Pup):
     All fs pupfile locations should be specified relative to the location of the
     pupfile.
     """
-    def _install_pup(self, install_dirs):
-        fs_pup_location = os.path.join(install_dirs.pupfile_dir, self._path)
+    def _install_pup(self):
+        fs_pup_location = os.path.join(self._config.get('abs_pupfile_dir'),
+                                       self._path)
 
-        pup_in_kennel_location = os.path.join(install_dirs.kennel_roles_dir,
-                                              self._name)
+        pup_in_kennel_location = os.path.join(
+            self._config.get('abs_kennel_roles_dir'), self._name)
 
         shutil.copytree(fs_pup_location, pup_in_kennel_location)
+
 
 class GitPup(Pup):
     """A pup for which the source lives in a remote git repo.
     """
-    def _install_pup(self, install_dirs):
+    def _install_pup(self):
         pass
+
 
 class GalaxyPup(Pup):
     """A pup for which the source lives on ansible-galaxy.
     """
-    def _install_pup(self, install_dirs):
+    def _install_pup(self):
         pass
+
 
 class PupDependency(object):
     """A base representation of a pup dependency - either a role or a pip
@@ -174,11 +182,13 @@ class PupDependency(object):
         """Install the pup dependency."""
         pass
 
+
 class PythonDependency(PupDependency):
     """A pip package that must be installed on local machine for this kennel to
     run.
     """
     pass
+
 
 class RoleDependency(PupDependency):
     """An ansible role that must be installed on local machine for this kennel

@@ -14,18 +14,21 @@ ACTIONS = {
 
 @click.command()
 @click.argument('action', type=click.Choice(ACTIONS.keys()))
-@click.option('--config-file')
+@click.option('--config-file', default='kennel.cfg')
 def cli(action, config_file):
     """CLI for sheepdog interactions.
 
     :param action: Which cli action we wish to take.
     :type action: str
-    :param config_file: Path to `sheepdog.cfg`. If not specified, use
+    :param config_file: Path to kennel configuration. If not specified, use
     `./kennel.cfg`
     :type config_file: str
     """
-    config = Config(config_file)
-    action = ACTIONS[action](config)
+    with open(config_file, 'r') as config_file_open_for_reading:
+        config_file_contents = config_file_open_for_reading.read()
+
+    Config.initialize_config_singleton(config_file_contents)
+    action = ACTIONS[action]()
 
     sheepdog = Sheepdog(action)
     sheepdog.run()

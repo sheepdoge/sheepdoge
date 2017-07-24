@@ -16,11 +16,7 @@ class RunAction(Action):
         self._kennel = None
 
     def _setup(self):
-        self._kennel = Kennel.parse_kennel_from_config_files(
-            self._config.get('kennel_playbook_path'),
-            self._config.get('kennel_roles_path'),
-            self._config.get('kennel_cfg_path'),
-        )
+        self._kennel = Kennel()
 
     def _execute(self):
         try:

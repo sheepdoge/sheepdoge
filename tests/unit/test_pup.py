@@ -3,11 +3,17 @@ import shutil
 import tempfile
 import unittest
 
-from sheepdog.action.install import InstallDirectories
+from sheepdog.config import Config
 from sheepdog.pup import FsPup, GalaxyPup, GitPup, Pup, PupfileEntry
 
 
 class PupTestCase(unittest.TestCase):
+    def setUp(self, *args, **kwargs):
+        super(PupTestCase, self).setUp(*args, **kwargs)
+
+        Config.clear_config_singleton()
+        Config.initialize_config_singleton()
+
     def test_parse_text_into_entries(self):
         """Test we parse the pupfile into the appropriate data structures from
         which to create the `Pup` instances.
@@ -68,8 +74,17 @@ class FsPupTestCase(unittest.TestCase):
         dir_root, kennel_roles_dir, pupfile_dir = self._create_test_fs()
 
         self._dir_root = dir_root
-        self._kennels_roles_dir = kennel_roles_dir
+        self._kennel_roles_dir = kennel_roles_dir
         self._pupfile_dir = pupfile_dir
+
+        mock_config_options = {
+            'kennel_roles_path': self._kennel_roles_dir,
+            'pupfile_path': os.path.join(self._pupfile_dir, 'pupfile.yml')
+        }
+
+        Config.clear_config_singleton()
+        Config.initialize_config_singleton(
+            config_options=mock_config_options)
 
     @staticmethod
     def _create_test_fs():
@@ -89,12 +104,7 @@ class FsPupTestCase(unittest.TestCase):
 
     def test_install_pup_no_dependencies(self):
         no_dep_pup = self._create_pup('sheepdog.no-dependencies-pup')
-
-        install_dirs = InstallDirectories(
-            pupfile_dir=self._pupfile_dir,
-            kennel_roles_dir=self._kennels_roles_dir
-        )
-        no_dep_pup.install(install_dirs)
+        no_dep_pup.install()
 
         self._assert_pup_installed(no_dep_pup)
 
@@ -115,8 +125,7 @@ class FsPupTestCase(unittest.TestCase):
         return FsPup(name, relative_pup_path)
 
     def _assert_pup_installed(self, pup):
-        expected_pup_location = os.path.join(self._kennels_roles_dir, pup._name)
+        expected_pup_location = os.path.join(self._kennel_roles_dir, pup._name)
         pup_copy_exists_in_kennel = os.path.isdir(expected_pup_location)
 
         self.assertTrue(pup_copy_exists_in_kennel)
-

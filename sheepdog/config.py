@@ -1,75 +1,137 @@
-"""Configuration parser for any command line options/files passed to
-sheepdog.
-"""
-
+from configparser import ConfigParser, NoOptionError
 import os
+
 
 DEFAULTS = {
     'pupfile_path': 'pupfile.yml',
     'kennel_playbook_path': 'kennel.yml',
-    'kennel_cfg_path': 'kennel.cfg',
-    'kennel_roles_path': '.kennel_roles'
+    'kennel_roles_path': '.kennel_roles',
+    'vault_password_file': '~/.sheepdog/vault_password_file.txt'
 }
 
 
-class SheepdogConfigurationNotFoundException(Exception):
+class SheepdogConfigurationAlreadyInitializedException(Exception):
+    pass
+
+
+class SheepdogConfigurationNotInitializedException(Exception):
     pass
 
 
 class Config(object):
-    """Sheepdog configuration parser.
-
-    Eventually sheepdog will read configuration from command line arguments,
-    environment variables, a configuration file, and as a last resort, defaults.
-
-    :param config_file: The path to the `kennel.cfg` file sheepdog will use for
-    this operation.
-    :type config_file: str
+    """Config class for which there should only be one instance at anytime.
+    Additionally, we can only set the config values during initialization.
+    Multiple different classes can access this single instance at a time.
     """
-    def __init__(self, config_file=None):
-        self._config_file = config_file
-        self._defaults = DEFAULTS
+    _config = None
 
-    def get(self, field):
-        """Get a configuration value. Because we fall back to defaults, we
-        guarantee a value will exist.
-
-        :param field: The config field for which we want the value.
-        :type field: str
+    @classmethod
+    def clear_config_singleton(cls):
+        """Delete the current configuration singleton to allow the
+        initialization of a new one. This method is predominantly used during test.
         """
-        first_order_config_preferences = [
-            DEFAULTS
-        ]
+        cls._config = None
 
-        for config in first_order_config_preferences:
-            if field in config:
-                return config[field]
+    @classmethod
+    def get_config_singleton(cls):
+        """Return the current config singleton instance. We must initialize
+        the singleton before calling this method.
 
-        second_order_config_preferences = [
-            self._calculate_configuration()
-        ]
-
-        for config in second_order_config_preferences:
-            if field in config:
-                return config[field]
-
-        raise SheepdogConfigurationNotFoundException(
-            '{} does not exit in configuration'.format(field))
-
-    def _calculate_configuration(self):
-        """Configuration values we use throughout the application, but don't
-        have the user specify.
-
-        Importantly, this can only access "first-order" config preferences,
-        or else we'll have infinite recursion.
+        :return: The singleton instance.
+        :rtype: Config
         """
-        pupfile_path = self.get('pupfile_path')
+        if cls._config is None:
+            raise SheepdogConfigurationNotInitializedException
+        return cls._config
+
+    @classmethod
+    def initialize_config_singleton(cls, config_file_contents=None,
+                                    config_options=None):
+        """Initialize the config singleton with the proper values. If we
+        specify no additional values during configuration, then the config
+        will contain all defaults. We can, in priority order, pass in the
+        contents of a *.cfg file and a dictionary of options. Typically we
+        derive this dictionary of options from the command line.
+
+        Finally, after setting all of the base configuration values,
+        we compute additional configuration values which are useful
+        throughout the program.
+
+        :param config_file_contents: The str contents of the .cfg file
+        containing kennel configuration.
+        :type: str
+        :param config_options: The dict specifying the highest priority
+        configuration values.
+        :type config_options: dict
+        """
+        if cls._config is not None:
+            raise SheepdogConfigurationAlreadyInitializedException()
+
+        config_dict = {}
+
+        cls._set_config_default_values(config_dict)
+
+        if config_file_contents:
+            cls._set_config_file_values(config_dict, config_file_contents)
+
+        if config_options:
+            cls._set_config_option_values(config_dict, config_options)
+
+        cls._set_calculated_config_values(config_dict)
+
+        config_instance = cls(config_dict)
+
+        cls._config = config_instance
+
+    @classmethod
+    def _set_config_default_values(cls, config_dict):
+        """Set defaults for all views here - they will be overwritten in the
+        following steps if necessary.
+        """
+        config_dict.update(DEFAULTS)
+
+    @classmethod
+    def _set_config_file_values(cls, config_dict, config_file_contents):
+        config_parser = ConfigParser()
+        config_parser.read_string(config_file_contents.decode('utf-8'))
+
+        kennel_cfg_section = 'kennel'
+
+        for currently_defined_key in config_dict.keys():
+            try:
+                config_file_value = config_parser.get(kennel_cfg_section,
+                                                      currently_defined_key)
+
+                config_dict[currently_defined_key] = config_file_value
+            except NoOptionError:
+                pass # If the value isn't specified, skip
+
+    @classmethod
+    def _set_config_option_values(cls, config_dict, config_options):
+        config_dict.update(config_options)
+
+    @classmethod
+    def _set_calculated_config_values(cls, config_dict):
+        pupfile_path = config_dict['pupfile_path']
         pupfile_dir = os.path.dirname(os.path.realpath(pupfile_path))
 
-        kennel_roles_path = self.get('kennel_roles_path')
+        kennel_roles_path = config_dict['kennel_roles_path']
         abs_kennel_roles_dir = os.path.realpath(kennel_roles_path)
 
-        return {
+        calculated_config = {
             'abs_pupfile_dir': pupfile_dir,
             'abs_kennel_roles_dir': abs_kennel_roles_dir
         }
+
+        config_dict.update(calculated_config)
+
+    def __init__(self, config_dict):
+        self._config_dict = config_dict
+
+    def get(self, key):
+        """Retrieve the value for the given configuration key.
+
+        :param key: One of the available configuration options.
+        :type key: str
+        """
+        return self._config_dict[key]
