@@ -1,12 +1,10 @@
 """Module for actions related to running a kennel."""
 
 from sheepdog.action import Action
-from sheepdog.kennel import Kennel, KennelRunException
+from sheepdog.exception import (SheepdogKennelRunException,
+                                SheepdogRunActionException)
+from sheepdog.kennel import Kennel
 
-# @TODO(mattjmcnaughton) Add `*ActionException` exceptions for each class.
-# Catch them in `app.py` and exit with the appropriate status code.
-class RunActionException(Exception):
-    pass
 
 
 class RunAction(Action):
@@ -21,5 +19,5 @@ class RunAction(Action):
     def _execute(self):
         try:
             self._kennel.run()
-        except KennelRunException as err:
-            raise RunActionException(err.message)
+        except SheepdogKennelRunException as err:
+            raise SheepdogRunActionException(err.message)

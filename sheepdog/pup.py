@@ -5,6 +5,7 @@ import shutil
 import yaml
 
 from sheepdog.config import Config
+from sheepdog.exception import SheepdogInvalidPupTypeException
 
 # The character used in the `location` in the pupfile to split between
 # `pup_type` and `path`.
@@ -19,10 +20,6 @@ def _pup_types_to_classes():
         'galaxy': GalaxyPup,
         'git': GitPup
     }
-
-
-class InvalidPupTypeException(Exception):
-    pass
 
 
 class Pup(object):
@@ -55,7 +52,8 @@ class Pup(object):
             pup_type, path = cls._parse_location(dict_entry['location'])
 
             if pup_type not in _pup_types_to_classes().keys():
-                raise InvalidPupTypeException('{} is not a valid pup type.'.format(pup_type))
+                err_msg = '{} is not a valid pup type.'.format(pup_type)
+                raise SheepdogInvalidPupTypeException(err_msg)
             entries.append(PupfileEntry(name=name, path=path, pup_type=pup_type))
 
         return entries

@@ -3,10 +3,8 @@ import shutil
 import subprocess
 
 from sheepdog.config import Config
+from sheepdog.exception import SheepdogKennelRunException
 
-
-class KennelRunException(Exception):
-    pass
 
 
 class Kennel(object):
@@ -35,5 +33,5 @@ class Kennel(object):
             subprocess.check_call(ansible_playbook_cmd, env=env_vars,
                                   shell=True)
         except subprocess.CalledProcessError as err:
-            raise KennelRunException('{} failed: {}'.format(
+            raise SheepdogKennelRunException('{} failed: {}'.format(
                 ansible_playbook_cmd, err.message))

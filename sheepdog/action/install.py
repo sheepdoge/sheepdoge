@@ -17,5 +17,6 @@ class InstallAction(Action):
             self._config.get('pupfile_path'))
 
     def _execute(self):
+        # @TODO(mattjmcnaughton) Add error handling.
         for pup in self._pups_to_install:
             pup.install()

@@ -1,8 +1,8 @@
 import unittest
 
-from sheepdog.config import (Config, DEFAULTS,
-                             SheepdogConfigurationAlreadyInitializedException,
-                             SheepdogConfigurationNotInitializedException)
+from sheepdog.config import (Config, DEFAULTS)
+from sheepdog.exception import (SheepdogConfigurationAlreadyInitializedException,
+                                SheepdogConfigurationNotInitializedException)
 
 
 class ConfigTestCase(unittest.TestCase):

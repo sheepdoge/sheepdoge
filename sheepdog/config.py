@@ -1,6 +1,9 @@
 from configparser import ConfigParser, NoOptionError
 import os
 
+from sheepdog.exception import (SheepdogConfigurationAlreadyInitializedException,
+                                SheepdogConfigurationNotInitializedException)
+
 
 DEFAULTS = {
     'pupfile_path': 'pupfile.yml',
@@ -8,14 +11,6 @@ DEFAULTS = {
     'kennel_roles_path': '.kennel_roles',
     'vault_password_file': '~/.sheepdog/vault_password_file.txt'
 }
-
-
-class SheepdogConfigurationAlreadyInitializedException(Exception):
-    pass
-
-
-class SheepdogConfigurationNotInitializedException(Exception):
-    pass
 
 
 class Config(object):
