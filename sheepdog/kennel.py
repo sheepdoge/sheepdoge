@@ -2,9 +2,8 @@ import os
 import shutil
 import subprocess
 
-from sheepdog.config import Config
+from sheepdog.config import Config, RUN_MODE_TO_TAGS
 from sheepdog.exception import SheepdogKennelRunException
-
 
 
 class Kennel(object):
@@ -23,7 +22,8 @@ class Kennel(object):
             'ansible-playbook',
             self._config.get('kennel_playbook_path'),
             '--vault-password-file={}'.format(
-                self._config.get('vault_password_file'))
+                self._config.get('vault_password_file')),
+            RUN_MODE_TO_TAGS[self._config.get('kennel_run_mode')]
         ])
 
         env_vars = os.environ.copy()

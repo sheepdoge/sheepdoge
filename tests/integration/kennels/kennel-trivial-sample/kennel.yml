@@ -5,9 +5,20 @@
 
   vars_files:
     - vars/var.yml
-    - vars/bootstrap_vault.yml
-    - vars/cron_vault.yml
 
-  roles:
-    - sheepdog.pup-base
-    - sheepdog.pup-trivial-sample
+  tasks:
+    - include_vars:
+        file: vars/cron_vault.yml
+      tags:
+        - cron
+
+    - include_vars:
+        file: vars/bootstrap_vault.yml
+      tags:
+        - bootstrap
+
+    - include_role:
+        name: sheepdog.pup-base
+
+    - include_role:
+        name: sheepdog.pup-trivial-sample

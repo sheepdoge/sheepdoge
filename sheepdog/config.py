@@ -5,10 +5,27 @@ from sheepdog.exception import (SheepdogConfigurationAlreadyInitializedException
                                 SheepdogConfigurationNotInitializedException)
 
 
+class KennelRunModes(object):
+    # Include everything except bootstrap tasks
+    NORMAL = 'normal'
+    # Run all tasks (including bootstrap tasks)
+    BOOTSTRAP = 'bootstrap'
+    # Run only the nightly cron tasks
+    CRON = 'cron'
+
+
+RUN_MODE_TO_TAGS = {
+    KennelRunModes.NORMAL: '--skip-tags="bootstrap"',
+    KennelRunModes.BOOTSTRAP: '',
+    KennelRunModes.CRON: '--tags="cron"'
+}
+
+
 DEFAULTS = {
-    'pupfile_path': 'pupfile.yml',
     'kennel_playbook_path': 'kennel.yml',
     'kennel_roles_path': '.kennel_roles',
+    'kennel_run_mode': KennelRunModes.NORMAL,
+    'pupfile_path': 'pupfile.yml',
     'vault_password_file': '~/.sheepdog/vault_password_file.txt'
 }
 
