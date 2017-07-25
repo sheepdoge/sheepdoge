@@ -1,0 +1,34 @@
+---
+
+- name: sample-cron-bootstrap-kennel
+  hosts: localhost
+
+  vars_files:
+    - vars/var.yml
+
+  tasks:
+    - include_vars:
+        file: vars/cron_vault.yml
+      tags:
+        - cron
+
+    - include_vars:
+        file: vars/bootstrap_vault.yml
+      tags:
+        - bootstrap
+
+    - include_role:
+        name: sheepdog.pup-base
+
+    - include_role:
+        name: sheepdog.pup-no-special-tag
+
+    - include_role:
+        name: sheepdog.pup-bootstrap
+      tags:
+        - bootstrap
+
+    - include_role:
+        name: sheepdog.pup-cron
+      tags:
+        - cron

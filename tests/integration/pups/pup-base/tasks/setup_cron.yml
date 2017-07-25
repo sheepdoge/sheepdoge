@@ -1,0 +1,59 @@
+---
+- name: Ensure the sheepdog log directory exists.
+  file:
+    path: "{{ sheepdog_log_directory }}"
+    state: directory
+    mode: u+rw
+
+- set_fact:
+    sheepdog_cron_log_path: "{{ sheepdog_log_directory }}/{{ sheepdog_cron_log_name }}"
+
+- name: Create the cron file to which sheepdog cron runs will write.
+  file:
+    path: "{{ sheepdog_cron_log_path }}"
+    state: touch
+    mode: u+rw
+
+# @TODO(mattjmcnaughton) Determine the most idiomatic way to do this.
+- set_fact:
+    use_virtualenv: "{{ sheepdog_use_virtualenv_for_cron | bool }}"
+
+- set_fact:
+    use_bashrc: "{{ sheepdog_use_bashrc_for_cron | bool }}"
+
+- name: Run sheepdog with virtualenv.
+  cron:
+    name: Run sheepdog cron.
+    minute: "{{ sheepdog_cron_interval_minutes }}"
+    hour: "{{ sheepdog_cron_interval_hours }}"
+    job: >
+      source {{ sheepdog_virtualenv_path }}/bin/activate &&
+      cd "{{ playbook_dir }}" &&
+      bash -c "sheepdog run --run-mode cron" >>
+      {{ sheepdog_cron_log_path }} 2>&1
+  when: use_virtualenv and not use_bashrc
+  notify: restart cron
+
+- name: Run sheepdog with bashrc.
+  cron:
+    name: Run sheepdog cron.
+    minute: "{{ sheepdog_cron_interval_minutes }}"
+    hour: "{{ sheepdog_cron_interval_hours }}"
+    job: >
+      cd "{{ playbook_dir }}" &&
+      bash -c ". ~/.bashrc && sheepdog run --run-mode cron" >>
+      {{ sheepdog_cron_log_path }} 2>&1
+  when: use_bashrc and not use_virtualenv
+  notify: restart cron
+
+- name: Run sheepdog without virtualenv or bashrc.
+  cron:
+    name: Run sheepdog cron.
+    minute: "{{ sheepdog_cron_interval_minutes }}"
+    hour: "{{ sheepdog_cron_interval_hours }}"
+    job: >
+      cd "{{ playbook_dir }}" &&
+      bash -c "sheepdog run --run-mode cron" >>
+      {{ sheepdog_cron_log_path }} 2>&1
+  when: not use_virtualenv and not use_bashrc
+  notify: restart cron

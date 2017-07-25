@@ -1,4 +1,5 @@
 ---
-- name: Tmp task to check ansible runs the base pup.
-  debug:
-    msg: "Running the base pup."
+- include: install_cron-Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include: setup_cron.yml

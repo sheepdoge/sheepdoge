@@ -1,0 +1,42 @@
+---
+# @TODO(mattjmcnaughton) This implementation is fairly hacky. See if there is a
+# more robust solution to ensuring `python-apt` is present.
+
+- name: Refresh apt-cache
+  command: >
+    apt-get update
+
+- name: To use apt module, hot install python-apt.
+  command: >
+    apt-get install python-apt -y -q
+    creates=/usr/share/doc/python-apt
+
+# @TODO(mattjmcnaughton) To test this pup, I am using the python2.7 docker
+# image. It installs a python to `/usr/local/bin/python2.7`. It has
+# `/usr/local/bin/python2.7/dist-packages` in its `sys.path`. However, it does
+# not have `usr/lib/python2.7/dist-package` in its `sys.path`. `apt-get install
+# python-apt` installs to `/usr/lib/python2.7/dist-package. As a result, even
+# though we installed `python-apt`, `ansible` could not find it. We must update
+# the `$PYTHONPATH` so python knows to search `/usr/lib/python2.7/dist-package`.
+#
+# Do more investiation to determine if this issue is universal or specific to
+# the Docker image we're using for testing. Implement a generic fix if
+# universal.
+- set_fact:
+    python_apt_install_location: /usr/lib/python2.7/dist-packages
+
+- set_fact:
+    python_path: "{{ python_apt_install_location }}"
+
+- set_fact:
+    python_path: "{{ ansible_env.PYTHONPATH }}:{{ python_path }}"
+  when: ansible_env.PYTHONPATH is defined
+
+- name: Ensure cron is installed.
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  with_items:
+    - cron
+  environment:
+    PYTHONPATH: "{{ python_path }}"

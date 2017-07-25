@@ -6,6 +6,7 @@
 
 set -e
 
-SD=$(dirname $0)
+SD="$(pwd)/$(dirname $0)"
 
 cd $SD/tests/trivial; /bin/bash ./run_test.sh;
+cd $SD/tests/cron-bootstrap; /bin/bash ./run_test.sh;
