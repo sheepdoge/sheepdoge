@@ -1,0 +1,2 @@
+---
+encrypted_boot: "{{ pup_bootstrap_bootstrap_vault_encrypted_boot }}"

@@ -2,6 +2,10 @@ class SheepdogException(Exception):
     pass
 
 
+class SheepdogCLIImproperArgumentsException(SheepdogException):
+    pass
+
+
 class SheepdogConfigurationAlreadyInitializedException(SheepdogException):
     pass
 

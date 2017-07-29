@@ -1,6 +1,6 @@
 ---
 
-- name: sample-trivial-kennel
+- name: sample-cron-bootstrap-kennel
   hosts: localhost
 
   vars_files:
@@ -21,4 +21,14 @@
         name: sheepdog.pup-base
 
     - include_role:
-        name: sheepdog.pup-trivial-sample
+        name: sheepdog.pup-no-special-tag
+
+    - include_role:
+        name: sheepdog.pup-bootstrap
+      tags:
+        - bootstrap
+
+    - include_role:
+        name: sheepdog.pup-cron
+      tags:
+        - cron
