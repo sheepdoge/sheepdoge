@@ -6,3 +6,6 @@ unit_tests:
 
 integration_tests:
 	./tests/integration/run_integration_tests.sh
+
+interactive_integration_tests:
+	./tests/integration/run_integration_tests.sh --interactive

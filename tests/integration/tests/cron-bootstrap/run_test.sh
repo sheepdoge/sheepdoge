@@ -33,4 +33,23 @@ cp -r "$SD/../../../../sheepdog" "$TMP_SCRATCH/sheepdog"
 # Bring up a blank docker image, with the kennel and pup.
 docker build -t $IMAGE_NAME .
 
-docker run $IMAGE_NAME /bin/bash -c "$DIR/run_sheepdog.sh && $DIR/assert_e2e_state.sh"
+IS_INTERACTIVE=false
+
+while [ $# -ne 0 ]
+do
+    case "$1" in
+    --interactive)
+        IS_INTERACTIVE=true
+        ;;
+    *)
+        ;;
+    esac
+    shift
+done
+
+if [ "$IS_INTERACTIVE" == "true" ]
+then
+    docker run -it $IMAGE_NAME /bin/bash
+else
+    docker run $IMAGE_NAME /bin/bash -c "$DIR/run_sheepdog.sh && $DIR/assert_e2e_state.sh"
+fi

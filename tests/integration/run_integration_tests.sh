@@ -6,7 +6,21 @@
 
 set -e
 
+INTERACTIVE_FLAG=
+
+while [ $# -ne 0 ]
+do
+    case "$1" in
+    --interactive)
+        INTERACTIVE_FLAG="--interactive"
+        ;;
+    *)
+        ;;
+    esac
+    shift
+done
+
 SD="$(pwd)/$(dirname $0)"
 
-cd $SD/tests/trivial; /bin/bash ./run_test.sh;
-cd $SD/tests/cron-bootstrap; /bin/bash ./run_test.sh;
+cd $SD/tests/trivial; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
+cd $SD/tests/cron-bootstrap; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
