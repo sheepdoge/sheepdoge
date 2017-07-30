@@ -10,3 +10,5 @@ docs/_build
 *.iml
 
 *.retry
+
+tmp_scratch
