@@ -2,6 +2,10 @@ class SheepdogException(Exception):
     pass
 
 
+class SheepdogAnsibleDependenciesInstallException(SheepdogException):
+    pass
+
+
 class SheepdogCLIImproperArgumentsException(SheepdogException):
     pass
 
@@ -19,6 +23,10 @@ class SheepdogInvalidPupTypeException(SheepdogException):
 
 
 class SheepdogKennelRunException(SheepdogException):
+    pass
+
+
+class SheepdogPythonDependenciesInstallException(SheepdogException):
     pass
 
 

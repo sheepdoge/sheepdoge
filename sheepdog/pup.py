@@ -1,11 +1,14 @@
 from collections import namedtuple
 import os
 import shutil
+import subprocess
 
 import yaml
 
 from sheepdog.config import Config
-from sheepdog.exception import SheepdogInvalidPupTypeException
+from sheepdog.exception import (SheepdogAnsibleDependenciesInstallException,
+                                SheepdogInvalidPupTypeException,
+                                SheepdogPythonDependenciesInstallException)
 
 # The character used in the `location` in the pupfile to split between
 # `pup_type` and `path`.
@@ -21,11 +24,21 @@ def _pup_types_to_classes():
         'git': GitPup
     }
 
+def _dependency_types_to_classes():
+    return {
+        'txt': PythonDependencies,
+        'yml': AnsibleDependencies
+    }
+
 
 class Pup(object):
     """Container of all pup related logic. Contains both static methods as well
     as base methods inherited by the different types of pups.
     """
+
+    PYTHON_DEP_FILE = 'requirements.txt'
+    ANSIBLE_DEP_FILE = 'requirements.yml'
+
     @classmethod
     def parse_pupfile_into_pups(cls, pupfile_path):
         """Return a list of `Pup` objects for each pup we wish to install."""
@@ -105,34 +118,38 @@ class Pup(object):
     def install(self):
         """Install all aspects of the pup.
         """
-        self._install_pup()
-        self._install_pup_dependencies()
+        pup_in_kennel_path = self._install_pup()
+        self._install_pup_dependencies(pup_in_kennel_path)
 
     def _install_pup(self):
         """Download the pup onto the local file system."""
         raise NotImplementedError
 
-    def _install_pup_dependencies(self):
+    def _install_pup_dependencies(self, pup_in_kennel_path):
         """Install the dependencies for the pup (i.e. other ansible roles or
         python packages.
         """
-        python_dependency_file = self._get_python_dependency_file()
-        role_dependency_file = self._get_role_dependency_file()
+        python_dependency_file, ansible_dependency_file = self._get_dep_files(
+            pup_in_kennel_path
+        )
 
-        for dep_file in {python_dependency_file, role_dependency_file}:
-            dependencies = PupDependency.parse_dependencies_from_file(dep_file)
-            self._pup_dependencies.extend(dependencies)
+        for dep_file_path in {python_dependency_file, ansible_dependency_file}:
+            if dep_file_path is not None:
+                dependencies = PupDependencies.create_from_dep_file_path(dep_file_path)
+                dependencies.install()
 
-        for dependency in self._pup_dependencies:
-            dependency.install()
+    @classmethod
+    def _get_dep_files(cls, pup_in_kennel_path):
+        python_dep_file = os.path.join(pup_in_kennel_path, cls.PYTHON_DEP_FILE)
+        ansible_dep_file = os.path.join(pup_in_kennel_path, cls.ANSIBLE_DEP_FILE)
 
-    @staticmethod
-    def _get_python_dependency_file():
-        return 'requirements.txt'
+        if not os.path.isfile(python_dep_file):
+            python_dep_file = None
 
-    @staticmethod
-    def _get_role_dependency_file():
-        return 'requirements.yaml'
+        if not os.path.isfile(ansible_dep_file):
+            ansible_dep_file = None
+
+        return python_dep_file, ansible_dep_file
 
 
 class FsPup(Pup):
@@ -146,10 +163,12 @@ class FsPup(Pup):
         fs_pup_location = os.path.join(self._config.get('abs_pupfile_dir'),
                                        self._path)
 
-        pup_in_kennel_location = os.path.join(
+        pup_in_kennel_path = os.path.join(
             self._config.get('abs_kennel_roles_dir'), self._name)
 
-        shutil.copytree(fs_pup_location, pup_in_kennel_location)
+        shutil.copytree(fs_pup_location, pup_in_kennel_path)
+
+        return pup_in_kennel_path
 
 
 class GitPup(Pup):
@@ -166,30 +185,76 @@ class GalaxyPup(Pup):
         pass
 
 
-class PupDependency(object):
-    """A base representation of a pup dependency - either a role or a pip
-    package.
+class PupDependencies(object):
+    """A base representation of a collection of pup dependencies. Either
+    python packages or ansible roles.
     """
     @staticmethod
-    def parse_dependencies_from_file(dep_file):
-        """Parse dependencies from a `requirements.{yml,txt} file."""
-        # pylint: disable=unused-argument
-        return []
+    def create_from_dep_file_path(dep_file_path):
+        """Given the path to a pup's dependency file, instantiate an instance of
+        the appropriate subclass based on the given `dep_file_path`.
+
+        :param dep_file_path: The path to the dependency file.
+        :type dep_file_path: str
+        :return: Instance of subclass of `PupDependencies`.
+        :rtype: PupDependencies
+        """
+        file_extension = dep_file_path.split('.')[-1]
+
+        return _dependency_types_to_classes()[file_extension](dep_file_path)
+
+    def __init__(self, dep_file_path, config=None):
+        self._dep_file_path = dep_file_path
+
+        self._config = config or Config.get_config_singleton()
 
     def install(self):
         """Install the pup dependency."""
-        pass
+        raise NotImplementedError
 
 
-class PythonDependency(PupDependency):
-    """A pip package that must be installed on local machine for this kennel to
+class PythonDependencies(PupDependencies):
+    """Pip packages that must be installed on local machine for this kennel to
     run.
     """
-    pass
+    def install(self):
+        pip_cmd = ' '.join([
+            'pip',
+            'install',
+            '-r',
+            self._dep_file_path
+        ])
+
+        try:
+            # @TODO(mattjmcnaughton) Define a helper method for making shell
+            # calls that ensures whatever virtualenv is activated for running
+            #  sheepdog, is also activated in the subprocess.
+            subprocess.check_call(pip_cmd, shell=True,
+                                  env=os.environ.copy())
+        except subprocess.CalledProcessError as err:
+            raise SheepdogPythonDependenciesInstallException(
+                '{} failed: {}'.format(pip_cmd, err.message)
+            )
 
 
-class RoleDependency(PupDependency):
-    """An ansible role that must be installed on local machine for this kennel
+class AnsibleDependencies(PupDependencies):
+    """Ansible roles that must be installed on local machine for this kennel
     to run.
     """
-    pass
+    def install(self):
+        ansible_galaxy_cmd = ' '.join([
+            'ansible-galaxy',
+            'install',
+            '-r',
+            self._dep_file_path,
+            '-p',
+            self._config.get('abs_kennel_roles_dir')
+        ])
+
+        try:
+            subprocess.check_call(ansible_galaxy_cmd, shell=True,
+                                  env=os.environ.copy())
+        except subprocess.CalledProcessError as err:
+            raise SheepdogAnsibleDependenciesInstallException(
+                '{} failed: {}'.format(ansible_galaxy_cmd, err.message)
+            )
