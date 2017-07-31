@@ -1,0 +1,12 @@
+---
+- name: Capture output of `pip list`
+  command: pip list
+  register: pip_list
+
+- assert:
+    that:
+      - "'SQLAlchemy' in pip_list.stdout"
+
+- name: Include role we installed as a dependency.
+  include_role:
+    name: mattjmcnaughton.pup-ansible-galaxy

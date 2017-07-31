@@ -199,7 +199,7 @@ class PupDependencies(object):
         :return: Instance of subclass of `PupDependencies`.
         :rtype: PupDependencies
         """
-        file_extension = dep_file_path.split('.')[1]
+        file_extension = dep_file_path.split('.')[-1]
 
         return _dependency_types_to_classes()[file_extension](dep_file_path)
 
@@ -230,7 +230,7 @@ class PythonDependencies(PupDependencies):
             # calls that ensures whatever virtualenv is activated for running
             #  sheepdog, is also activated in the subprocess.
             subprocess.check_call(pip_cmd, shell=True,
-                                  environment=os.environ.copy())
+                                  env=os.environ.copy())
         except subprocess.CalledProcessError as err:
             raise SheepdogPythonDependenciesInstallException(
                 '{} failed: {}'.format(pip_cmd, err.message)
@@ -253,7 +253,7 @@ class AnsibleDependencies(PupDependencies):
 
         try:
             subprocess.check_call(ansible_galaxy_cmd, shell=True,
-                                  environment=os.environ.copy())
+                                  env=os.environ.copy())
         except subprocess.CalledProcessError as err:
             raise SheepdogAnsibleDependenciesInstallException(
                 '{} failed: {}'.format(ansible_galaxy_cmd, err.message)

@@ -1,0 +1,3 @@
+---
+- { name: sheepdog.pup-base, location: fs+../../pups/pup-base }
+- { name: sheepdog.pup-dependencies, location: fs+../../pups/pup-dependencies }
