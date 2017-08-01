@@ -18,6 +18,14 @@ class SheepdogConfigurationNotInitializedException(SheepdogException):
     pass
 
 
+class SheepdogGalaxyPupInstallException(SheepdogException):
+    pass
+
+
+class SheepdogGitPupInstallException(SheepdogException):
+    pass
+
+
 class SheepdogInvalidPupTypeException(SheepdogException):
     pass
 

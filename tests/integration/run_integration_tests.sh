@@ -25,3 +25,4 @@ SD="$(pwd)/$(dirname $0)"
 cd $SD/tests/trivial; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
 cd $SD/tests/cron-bootstrap; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
 cd $SD/tests/dependencies; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
+cd $SD/tests/external-pups; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
