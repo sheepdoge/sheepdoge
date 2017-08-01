@@ -1,12 +1,16 @@
 from collections import namedtuple
+from contextlib import contextmanager
 import os
 import shutil
 import subprocess
+import tempfile
 
 import yaml
 
 from sheepdog.config import Config
 from sheepdog.exception import (SheepdogAnsibleDependenciesInstallException,
+                                SheepdogGalaxyPupInstallException,
+                                SheepdogGitPupInstallException,
                                 SheepdogInvalidPupTypeException,
                                 SheepdogPythonDependenciesInstallException)
 
@@ -151,6 +155,15 @@ class Pup(object):
 
         return python_dep_file, ansible_dep_file
 
+    @staticmethod
+    @contextmanager
+    def _with_tmp_dir():
+        tmp_dir_path = tempfile.mkdtemp()
+
+        yield tmp_dir_path
+
+        shutil.rmtree(tmp_dir_path)
+
 
 class FsPup(Pup):
     """A pup for which the source code is already on the local file system (we
@@ -175,14 +188,70 @@ class GitPup(Pup):
     """A pup for which the source lives in a remote git repo.
     """
     def _install_pup(self):
-        pass
+        with self._with_tmp_dir() as install_dir:
+            install_path = os.path.join(install_dir, self._name)
+
+            git_cmd = ' '.join([
+                'git',
+                'clone',
+                self._path,
+                install_path
+            ])
+
+            try:
+                subprocess.check_call(git_cmd, shell=True,
+                                      env=os.environ.copy())
+            except subprocess.CalledProcessError as err:
+                raise SheepdogGitPupInstallException(
+                    '{} failed: {}'.format(git_cmd, err.message)
+                )
+
+            pup_in_kennel_path = os.path.join(
+                self._config.get('abs_kennel_roles_dir'),
+                self._name
+            )
+
+            shutil.copytree(install_path, pup_in_kennel_path)
+
+            return pup_in_kennel_path
 
 
 class GalaxyPup(Pup):
     """A pup for which the source lives on ansible-galaxy.
     """
     def _install_pup(self):
-        pass
+        with self._with_tmp_dir() as install_dir:
+            ansible_galaxy_cmd = ' '.join([
+                'ansible-galaxy',
+                'install',
+                self._path,
+                '-p',
+                install_dir
+            ])
+
+            try:
+                subprocess.check_call(ansible_galaxy_cmd, shell=True,
+                                      env=os.environ.copy())
+            except subprocess.CalledProcessError as err:
+                raise SheepdogGalaxyPupInstallException(
+                    '{} failed: {}'.format(ansible_galaxy_cmd, err.message)
+                )
+
+            role_name = os.listdir(install_dir)[0]
+
+            install_path = os.path.join(
+                install_dir,
+                role_name
+            )
+
+            pup_in_kennel_path = os.path.join(
+                self._config.get('abs_kennel_roles_dir'),
+                self._name
+            )
+
+            shutil.copytree(install_path, pup_in_kennel_path)
+
+            return pup_in_kennel_path
 
 
 class PupDependencies(object):

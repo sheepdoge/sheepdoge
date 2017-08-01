@@ -1,0 +1,17 @@
+---
+
+- name: kennel-dependencies
+  hosts: localhost
+
+  vars_files:
+    - vars/var.yml
+
+  tasks:
+    - include_role:
+        name: sheepdog.pup-base
+
+    - include_role:
+        name: sheepdog.pup-github
+
+    - include_role:
+        name: sheepdog.pup-ansible-galaxy

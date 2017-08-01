@@ -70,9 +70,9 @@ class PupTestCase(unittest.TestCase):
         self.assertEqual(actual_pup_dicts, expected_pup_dicts)
 
 
-class FsPupTestCase(unittest.TestCase):
+class BasePupTestCase(unittest.TestCase):
     def setUp(self, *args, **kwargs):
-        super(FsPupTestCase, self).setUp(*args, **kwargs)
+        super(BasePupTestCase, self).setUp(*args, **kwargs)
 
         dir_root, kennel_roles_dir, pupfile_dir = self._create_test_fs()
 
@@ -100,19 +100,26 @@ class FsPupTestCase(unittest.TestCase):
         return dir_root, kennel_roles_dir, pupfile_dir
 
     def tearDown(self, *args, **kwargs):
-        super(FsPupTestCase, self).tearDown(*args, **kwargs)
+        super(BasePupTestCase, self).tearDown(*args, **kwargs)
 
         if os.path.isdir(self._dir_root):
             shutil.rmtree(self._dir_root)
 
+    def _assert_pup_installed(self, pup):
+        expected_pup_location = os.path.join(self._kennel_roles_dir, pup._name)
+        pup_copy_exists_in_kennel = os.path.isdir(expected_pup_location)
+
+        self.assertTrue(pup_copy_exists_in_kennel)
+
+
+class FsPupTestCase(BasePupTestCase):
     def test_install_pup_no_dependencies(self):
-        no_dep_pup = self._create_pup('sheepdog.no-dependencies-pup')
+        no_dep_pup = self._create_fs_pup('sheepdog.no-dependencies-pup')
         no_dep_pup.install()
 
         self._assert_pup_installed(no_dep_pup)
 
-    def _create_pup(self, name, python_dependencies=None,
-                    role_dependencies=None):
+    def _create_fs_pup(self, name):
         pups_dir = os.path.join(self._dir_root, 'pups')
         os.mkdir(pups_dir)
 
@@ -127,11 +134,17 @@ class FsPupTestCase(unittest.TestCase):
         relative_pup_path = os.path.join('.', 'pups', name_suffix)
         return FsPup(name, relative_pup_path)
 
-    def _assert_pup_installed(self, pup):
-        expected_pup_location = os.path.join(self._kennel_roles_dir, pup._name)
-        pup_copy_exists_in_kennel = os.path.isdir(expected_pup_location)
 
-        self.assertTrue(pup_copy_exists_in_kennel)
+class GitPupTestCase(BasePupTestCase):
+    @unittest.skip('Tested in integration test.')
+    def test_install_git_pup(self):
+        pass
+
+
+class GalaxyPupTestCase(BasePupTestCase):
+    @unittest.skip('Tested in integration tests.')
+    def test_install_galaxy_pup(self):
+        pass
 
 
 class PupDependenciesTestCase(unittest.TestCase):
