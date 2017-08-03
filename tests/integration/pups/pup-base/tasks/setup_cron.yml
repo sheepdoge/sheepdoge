@@ -21,6 +21,18 @@
 - set_fact:
     use_bashrc: "{{ sheepdog_use_bashrc_for_cron | bool }}"
 
+- name: Check if the kennel is version controlled through git.
+  command: git -C "{{ playbook_dir }}" rev-parse
+  register: git_check_result
+  ignore_errors: True
+
+- set_fact:
+    git_update_cmd: "echo 'Git repo not found in {{ playbook_dir }}'"
+
+- set_fact:
+    git_update_cmd: "git pull origin master"
+  when: git_check_result|succeeded
+
 - name: Run sheepdog with virtualenv.
   cron:
     name: Run sheepdog cron.
@@ -29,7 +41,8 @@
     job: >
       source {{ sheepdog_virtualenv_path }}/bin/activate &&
       cd "{{ playbook_dir }}" &&
-      bash -c "sheepdog run --run-mode cron" >>
+      {{ git_update_cmd }} &&
+      bash -c "sheepdog install && sheepdog run --run-mode cron" >>
       {{ sheepdog_cron_log_path }} 2>&1
   when: use_virtualenv and not use_bashrc
   notify: restart cron
@@ -41,7 +54,8 @@
     hour: "{{ sheepdog_cron_interval_hours }}"
     job: >
       cd "{{ playbook_dir }}" &&
-      bash -c ". ~/.bashrc && sheepdog run --run-mode cron" >>
+      {{ git_update_cmd }} &&
+      bash -c ". ~/.bashrc && sheepdog install && sheepdog run --run-mode cron" >>
       {{ sheepdog_cron_log_path }} 2>&1
   when: use_bashrc and not use_virtualenv
   notify: restart cron
@@ -53,7 +67,8 @@
     hour: "{{ sheepdog_cron_interval_hours }}"
     job: >
       cd "{{ playbook_dir }}" &&
-      bash -c "sheepdog run --run-mode cron" >>
+      {{ git_update_cmd }} &&
+      bash -c "sheepdog install && sheepdog run --run-mode cron" >>
       {{ sheepdog_cron_log_path }} 2>&1
   when: not use_virtualenv and not use_bashrc
   notify: restart cron
