@@ -6,10 +6,6 @@ class SheepdogAnsibleDependenciesInstallException(SheepdogException):
     pass
 
 
-class SheepdogCLIImproperArgumentsException(SheepdogException):
-    pass
-
-
 class SheepdogConfigurationAlreadyInitializedException(SheepdogException):
     pass
 
