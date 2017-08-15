@@ -28,6 +28,7 @@ def _pup_types_to_classes():
         'git': GitPup
     }
 
+
 def _dependency_types_to_classes():
     return {
         'txt': PythonDependencies,
