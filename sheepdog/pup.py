@@ -2,17 +2,13 @@ from collections import namedtuple
 from contextlib import contextmanager
 import os
 import shutil
-import subprocess
 import tempfile
 
 import yaml
 
 from sheepdog.config import Config
-from sheepdog.exception import (SheepdogAnsibleDependenciesInstallException,
-                                SheepdogGalaxyPupInstallException,
-                                SheepdogGitPupInstallException,
-                                SheepdogInvalidPupTypeException,
-                                SheepdogPythonDependenciesInstallException)
+from sheepdog.exception import SheepdogInvalidPupTypeException
+from sheepdog.utils import ShellRunner
 
 # The character used in the `location` in the pupfile to split between
 # `pup_type` and `path`.
@@ -192,20 +188,14 @@ class GitPup(Pup):
         with self._with_tmp_dir() as install_dir:
             install_path = os.path.join(install_dir, self._name)
 
-            git_cmd = ' '.join([
+            git_cmd = [
                 'git',
                 'clone',
                 self._path,
                 install_path
-            ])
+            ]
 
-            try:
-                subprocess.check_call(git_cmd, shell=True,
-                                      env=os.environ.copy())
-            except subprocess.CalledProcessError as err:
-                raise SheepdogGitPupInstallException(
-                    '{} failed: {}'.format(git_cmd, err.message)
-                )
+            ShellRunner(git_cmd).run()
 
             pup_in_kennel_path = os.path.join(
                 self._config.get('abs_kennel_roles_dir'),
@@ -222,21 +212,15 @@ class GalaxyPup(Pup):
     """
     def _install_pup(self):
         with self._with_tmp_dir() as install_dir:
-            ansible_galaxy_cmd = ' '.join([
+            ansible_galaxy_cmd = [
                 'ansible-galaxy',
                 'install',
                 self._path,
                 '-p',
                 install_dir
-            ])
+            ]
 
-            try:
-                subprocess.check_call(ansible_galaxy_cmd, shell=True,
-                                      env=os.environ.copy())
-            except subprocess.CalledProcessError as err:
-                raise SheepdogGalaxyPupInstallException(
-                    '{} failed: {}'.format(ansible_galaxy_cmd, err.message)
-                )
+            ShellRunner(ansible_galaxy_cmd).run()
 
             role_name = os.listdir(install_dir)[0]
 
@@ -288,23 +272,14 @@ class PythonDependencies(PupDependencies):
     run.
     """
     def install(self):
-        pip_cmd = ' '.join([
+        pip_cmd = [
             'pip',
             'install',
             '-r',
             self._dep_file_path
-        ])
+        ]
 
-        try:
-            # @TODO(mattjmcnaughton) Define a helper method for making shell
-            # calls that ensures whatever virtualenv is activated for running
-            #  sheepdog, is also activated in the subprocess.
-            subprocess.check_call(pip_cmd, shell=True,
-                                  env=os.environ.copy())
-        except subprocess.CalledProcessError as err:
-            raise SheepdogPythonDependenciesInstallException(
-                '{} failed: {}'.format(pip_cmd, err.message)
-            )
+        ShellRunner(pip_cmd).run()
 
 
 class AnsibleDependencies(PupDependencies):
@@ -312,19 +287,13 @@ class AnsibleDependencies(PupDependencies):
     to run.
     """
     def install(self):
-        ansible_galaxy_cmd = ' '.join([
+        ansible_galaxy_cmd = [
             'ansible-galaxy',
             'install',
             '-r',
             self._dep_file_path,
             '-p',
             self._config.get('abs_kennel_roles_dir')
-        ])
+        ]
 
-        try:
-            subprocess.check_call(ansible_galaxy_cmd, shell=True,
-                                  env=os.environ.copy())
-        except subprocess.CalledProcessError as err:
-            raise SheepdogAnsibleDependenciesInstallException(
-                '{} failed: {}'.format(ansible_galaxy_cmd, err.message)
-            )
+        ShellRunner(ansible_galaxy_cmd).run()
