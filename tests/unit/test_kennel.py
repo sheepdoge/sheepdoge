@@ -25,6 +25,8 @@ class KennelTestCase(unittest.TestCase):
         self.assertEqual(os.listdir(mock_kennel_path), [])
         self.assertTrue(os.path.isdir(mock_kennel_path))
 
+    # @TODO(mattjmcnaughton) Consider using dependency injection for
+    # `ShellRunner` instead of patching `subprocess.check_call`.
     @mock.patch('subprocess.check_call')
     def test_kennel_run(self, mock_check_call):
         """Test running the kennel. We only test that it passes the correct
