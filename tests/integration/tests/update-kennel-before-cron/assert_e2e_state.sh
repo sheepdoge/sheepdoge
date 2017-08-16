@@ -8,12 +8,29 @@
 
 set -e
 
+MAX_TRIES=120
+
 # First argument is file, second is pattern, third is the min number of occurrences
 # of pattern we expect in file.
 assert_e2e_state::check_occurrences_in_file() {
-    matches=$(grep -s "$2" "$1" | wc -l)
+    tries=0
+    success=false
 
-    if [ "$matches" -lt "$3" ]
+    while [ "$tries" -lt "$MAX_TRIES" ]
+    do
+        matches=$(grep -s "$2" "$1" | wc -l)
+
+        if [ "$matches" -lt "$3" ]
+        then
+            sleep 1
+            let "tries += 1"
+        else
+            success=true
+            break
+        fi
+    done
+
+    if [ "$success" = false ]
     then
         echo "Failed $1, $2, $3" >&2
         exit 1
