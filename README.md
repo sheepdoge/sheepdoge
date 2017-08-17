@@ -12,6 +12,10 @@ With *sheepdog*, provisioning a personal Unix machine can be as easy as:
 $ sheepdog install && sheepdog run --bootstrap
 ```
 
+For more info on how *sheepdog* works, read on. If you want to get your hands
+dirty with *sheepdog* asap, check out [sheepdog up and
+running](./docs/sheepdog_up_and_running.md).
+
 ## How it works
 
 Sheepdog has three main components:
@@ -59,11 +63,13 @@ pip install sheepdog
 
 ## Writing your first kennel
 
-@TODO(mattjmcnaughton)
+Check out [Creating your first kennel](./docs/creating_your_first_kennel.md) for
+step by step instructions on creating your first kennel.
 
 ## Writing your first pup
 
-@TODO(mattjmcnaughton)
+Check out [Creating your first pup](./docs/creating_your_first_pup.md) for step
+by step instructions to creating your first pup.
 
 ## Contributing
 
