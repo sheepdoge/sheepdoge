@@ -11,18 +11,25 @@ setup(
     name='sheepdog',
     version=VERSION,
     description='Manage your personal Unix machine(s) with Ansible.',
-    author='Matt McNaughton',
-    license='Apache',
-    author_email='mattjmcnaughton@gmail.com',
     url=GITHUB_URL,
-    download_url='{}/tarball/{}'.format(GITHUB_URL, VERSION),
+    author='Matt McNaughton',
+    author_email='mattjmcnaughton@gmail.com',
+    license='Apache',
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Developers',
+        'Topic :: Software Development :: Build Tools',
+        'License :: OSI Approved :: Apache License',
+        'Programming Language :: Python :: 2.7'
+    ],
     keywords=['provisioning', 'automation'],
+    packages=['sheepdog'],
     install_requires=[
         'ansible>=2.0,<3.0',
         'click>=6.0,<7.0',
         'PyYaml>=3.0,<4.0'
     ],
-    packages=['sheepdog'],
+    python_requires='>=2.7, <3',
     entry_points={
         'console_scripts': ['sheepdog = sheepdog.cli:main']
     }
