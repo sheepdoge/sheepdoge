@@ -1,3 +1,3 @@
 # dependencies
 
-An integration test to ensure sheepdog is installing dependencies.
+An integration test to ensure sheepdoge is installing dependencies.

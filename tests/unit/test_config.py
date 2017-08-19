@@ -1,8 +1,8 @@
 import unittest
 
-from sheepdog.config import (Config, DEFAULTS)
-from sheepdog.exception import (SheepdogConfigurationAlreadyInitializedException,
-                                SheepdogConfigurationNotInitializedException)
+from sheepdoge.config import (Config, DEFAULTS)
+from sheepdoge.exception import (SheepdogeConfigurationAlreadyInitializedException,
+                                 SheepdogeConfigurationNotInitializedException)
 
 
 class ConfigTestCase(unittest.TestCase):
@@ -12,13 +12,13 @@ class ConfigTestCase(unittest.TestCase):
         Config.clear_config_singleton()
 
     def test_must_initialize_config_before_using(self):
-        with self.assertRaises(SheepdogConfigurationNotInitializedException):
+        with self.assertRaises(SheepdogeConfigurationNotInitializedException):
             Config.get_config_singleton()
 
     def test_can_only_initialize_config_once(self):
         Config.initialize_config_singleton()
 
-        with self.assertRaises(SheepdogConfigurationAlreadyInitializedException):
+        with self.assertRaises(SheepdogeConfigurationAlreadyInitializedException):
             Config.initialize_config_singleton()
 
     def test_initialize_config_with_defaults(self):

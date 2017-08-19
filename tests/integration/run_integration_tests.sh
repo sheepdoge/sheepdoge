@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Run all sheepdog integration tests. Sheepdog has a number of different
+# Run all sheepdoge integration tests. Sheepdoge has a number of different
 # integration tests, each one representing a different main feature through an
 # example.
 #

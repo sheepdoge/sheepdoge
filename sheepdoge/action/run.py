@@ -1,7 +1,7 @@
 """Module for actions related to running a kennel."""
 
-from sheepdog.action import Action
-from sheepdog.kennel import Kennel
+from sheepdoge.action import Action
+from sheepdoge.kennel import Kennel
 
 
 class RunAction(Action):

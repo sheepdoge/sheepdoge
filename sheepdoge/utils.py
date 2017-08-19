@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-from sheepdog.exception import SheepdogShellRunnerException
+from sheepdoge.exception import SheepdogeShellRunnerException
 
 
 class ShellRunner(object):
@@ -10,7 +10,7 @@ class ShellRunner(object):
 
     :param cmd_as_list: The command for the `ShellRunner` to execute.
     :type cmd_as_list: list
-    :raises: SheepdogShellRunnerException
+    :raises: SheepdogeShellRunnerException
     """
     def __init__(self, cmd_as_list):
         self._cmd_as_str = ' '.join(cmd_as_list)
@@ -35,6 +35,6 @@ class ShellRunner(object):
                 env=shell_env
             )
         except subprocess.CalledProcessError as err:
-            raise SheepdogShellRunnerException(
+            raise SheepdogeShellRunnerException(
                 '{} failed: {}'.format(self._cmd_as_str, err.message)
             )

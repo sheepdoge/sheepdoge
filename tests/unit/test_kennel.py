@@ -3,8 +3,8 @@ import os
 import tempfile
 import unittest
 
-from sheepdog.config import Config, KennelRunModes
-from sheepdog.kennel import Kennel
+from sheepdoge.config import Config, KennelRunModes
+from sheepdoge.kennel import Kennel
 
 
 class KennelTestCase(unittest.TestCase):

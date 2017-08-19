@@ -8,10 +8,10 @@
 
   tasks:
     - include_role:
-        name: sheepdog.pup-base
+        name: sheepdoge.pup-base
 
     - include_role:
-        name: sheepdog.pup-github
+        name: sheepdoge.pup-github
 
     - include_role:
-        name: sheepdog.pup-ansible-galaxy
+        name: sheepdoge.pup-ansible-galaxy

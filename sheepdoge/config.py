@@ -1,8 +1,8 @@
 from configparser import ConfigParser, NoOptionError
 import os
 
-from sheepdog.exception import (SheepdogConfigurationAlreadyInitializedException,
-                                SheepdogConfigurationNotInitializedException)
+from sheepdoge.exception import (SheepdogeConfigurationAlreadyInitializedException,
+                                 SheepdogeConfigurationNotInitializedException)
 
 
 class KennelRunModes(object):
@@ -26,7 +26,7 @@ DEFAULTS = {
     'kennel_roles_path': '.kennel_roles',
     'kennel_run_mode': KennelRunModes.NORMAL,
     'pupfile_path': 'pupfile.yml',
-    'vault_password_file': '~/.sheepdog/vault_password_file.txt'
+    'vault_password_file': '~/.sheepdoge/vault_password_file.txt'
 }
 
 
@@ -53,7 +53,7 @@ class Config(object):
         :rtype: Config
         """
         if cls._config is None:
-            raise SheepdogConfigurationNotInitializedException
+            raise SheepdogeConfigurationNotInitializedException
         return cls._config
 
     @classmethod
@@ -77,7 +77,7 @@ class Config(object):
         :type config_options: dict
         """
         if cls._config is not None:
-            raise SheepdogConfigurationAlreadyInitializedException()
+            raise SheepdogeConfigurationAlreadyInitializedException()
 
         config_dict = {}
 

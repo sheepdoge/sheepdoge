@@ -6,9 +6,9 @@ import tempfile
 
 import yaml
 
-from sheepdog.config import Config
-from sheepdog.exception import SheepdogInvalidPupTypeException
-from sheepdog.utils import ShellRunner
+from sheepdoge.config import Config
+from sheepdoge.exception import SheepdogeInvalidPupTypeException
+from sheepdoge.utils import ShellRunner
 
 # The character used in the `location` in the pupfile to split between
 # `pup_type` and `path`.
@@ -67,7 +67,7 @@ class Pup(object):
 
             if pup_type not in _pup_types_to_classes().keys():
                 err_msg = '{} is not a valid pup type.'.format(pup_type)
-                raise SheepdogInvalidPupTypeException(err_msg)
+                raise SheepdogeInvalidPupTypeException(err_msg)
             entries.append(PupfileEntry(name=name, path=path, pup_type=pup_type))
 
         return entries
