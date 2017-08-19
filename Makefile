@@ -9,6 +9,3 @@ integration_tests:
 
 interactive_integration_tests:
 	./tests/integration/run_integration_tests.sh --interactive
-
-release:
-	./release.sh
