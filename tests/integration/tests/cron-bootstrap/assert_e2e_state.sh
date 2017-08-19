@@ -2,7 +2,7 @@
 
 # Note, this script should be run in the docker container.
 
-# Check sheepdog enacted the proper state on the docker container.
+# Check sheepdoge enacted the proper state on the docker container.
 # The cron role should have been run 3 times, the no-special-tag role should have
 # run 2 times, and the bootstrap role should have run 1 time.
 

@@ -8,7 +8,7 @@
 
   tasks:
     - include_role:
-        name: sheepdog.pup-base
+        name: sheepdoge.pup-base
 
     - include_role:
-        name: sheepdog.pup-dependencies
+        name: sheepdoge.pup-dependencies

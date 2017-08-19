@@ -18,7 +18,7 @@
         - bootstrap
 
     - include_role:
-        name: sheepdog.pup-base
+        name: sheepdoge.pup-base
 
     - include_role:
-        name: sheepdog.pup-trivial-sample
+        name: sheepdoge.pup-trivial-sample

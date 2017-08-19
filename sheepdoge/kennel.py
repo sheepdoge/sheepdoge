@@ -1,8 +1,8 @@
 import os
 import shutil
 
-from sheepdog.config import Config, RUN_MODE_TO_TAGS
-from sheepdog.utils import ShellRunner
+from sheepdoge.config import Config, RUN_MODE_TO_TAGS
+from sheepdoge.utils import ShellRunner
 
 
 class Kennel(object):

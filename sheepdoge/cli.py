@@ -1,11 +1,11 @@
-"""The point of entry for the sheepdog pip package console script"""
+"""The point of entry for the sheepdoge pip package console script"""
 
 import click
 
-from sheepdog.action.install import InstallAction
-from sheepdog.action.run import RunAction
-from sheepdog.app import Sheepdog
-from sheepdog.config import Config, KennelRunModes
+from sheepdoge.action.install import InstallAction
+from sheepdoge.action.run import RunAction
+from sheepdoge.app import Sheepdoge
+from sheepdoge.config import Config, KennelRunModes
 
 
 def _initialize_config(config_file, config_options=None):
@@ -31,7 +31,7 @@ def install(config_file):
     _initialize_config(config_file)
 
     install_action = InstallAction()
-    Sheepdog(install_action).run()
+    Sheepdoge(install_action).run()
 
 
 @cli.command()
@@ -48,7 +48,7 @@ def run(run_mode, config_file):
     _initialize_config(config_file, config_options)
 
     run_action = RunAction()
-    Sheepdog(run_action).run()
+    Sheepdoge(run_action).run()
 
 
 def main():

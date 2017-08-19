@@ -18,17 +18,17 @@
         - bootstrap
 
     - include_role:
-        name: sheepdog.pup-base
+        name: sheepdoge.pup-base
 
     - include_role:
-        name: sheepdog.pup-no-special-tag
+        name: sheepdoge.pup-no-special-tag
 
     - include_role:
-        name: sheepdog.pup-bootstrap
+        name: sheepdoge.pup-bootstrap
       tags:
         - bootstrap
 
     - include_role:
-        name: sheepdog.pup-cron
+        name: sheepdoge.pup-cron
       tags:
         - cron

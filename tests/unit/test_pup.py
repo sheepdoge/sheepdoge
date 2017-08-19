@@ -4,8 +4,8 @@ import shutil
 import tempfile
 import unittest
 
-from sheepdog.config import Config
-from sheepdog.pup import (AnsibleDependencies, FsPup, GalaxyPup, GitPup,
+from sheepdoge.config import Config
+from sheepdoge.pup import (AnsibleDependencies, FsPup, GalaxyPup, GitPup,
                           Pup, PupDependencies, PupfileEntry,
                           PythonDependencies)
 
@@ -23,19 +23,19 @@ class PupTestCase(unittest.TestCase):
         """
         pupfile_contents = """
 ---
-- { name: "sheepdog.pup-base", location: "fs+../../pups/pup-base" }
-- { name: "sheepdog.pup-base", location: "git+https://github.com/mattjmcnaughton/pup-base.git" }
-- { name: "sheepdog.pup-base", location: "galaxy+sheepdog.pup-base" }
+- { name: "sheepdoge.pup-base", location: "fs+../../pups/pup-base" }
+- { name: "sheepdoge.pup-base", location: "git+https://github.com/mattjmcnaughton/pup-base.git" }
+- { name: "sheepdoge.pup-base", location: "galaxy+sheepdoge.pup-base" }
         """
 
         expected_entries = [
-            PupfileEntry(name='sheepdog.pup-base', path='../../pups/pup-base',
+            PupfileEntry(name='sheepdoge.pup-base', path='../../pups/pup-base',
                          pup_type='fs'),
-            PupfileEntry(name='sheepdog.pup-base',
+            PupfileEntry(name='sheepdoge.pup-base',
                          path='https://github.com/mattjmcnaughton/pup-base.git',
                          pup_type='git'),
-            PupfileEntry(name='sheepdog.pup-base',
-                         path='sheepdog.pup-base',
+            PupfileEntry(name='sheepdoge.pup-base',
+                         path='sheepdoge.pup-base',
                          pup_type='galaxy')
         ]
 
@@ -47,21 +47,21 @@ class PupTestCase(unittest.TestCase):
         of `Pup` subclasses.
         """
         pupfile_entries = [
-            PupfileEntry(name='sheepdog.pup-base', path='../../pups/pup-base',
+            PupfileEntry(name='sheepdoge.pup-base', path='../../pups/pup-base',
                          pup_type='fs'),
-            PupfileEntry(name='sheepdog.pup-base',
+            PupfileEntry(name='sheepdoge.pup-base',
                          path='https://github.com/mattjmcnaughton/pup-base.git',
                          pup_type='git'),
-            PupfileEntry(name='sheepdog.pup-base',
-                         path='sheepdog.pup-base',
+            PupfileEntry(name='sheepdoge.pup-base',
+                         path='sheepdoge.pup-base',
                          pup_type='galaxy')
         ]
 
         expected_pups = [
-            FsPup('sheepdog.pup-base', '../../pups/pup-base'),
-            GitPup('sheepdog.pup-base',
+            FsPup('sheepdoge.pup-base', '../../pups/pup-base'),
+            GitPup('sheepdoge.pup-base',
                    'https://github.com/mattjmcnaughton/pup-base.git'),
-            GalaxyPup('sheepdog.pup-base', 'sheepdog.pup-base')
+            GalaxyPup('sheepdoge.pup-base', 'sheepdoge.pup-base')
         ]
 
         actual_pup_dicts = [pup.to_dict() for pup in Pup.create_from_entries(pupfile_entries)]
@@ -114,7 +114,7 @@ class BasePupTestCase(unittest.TestCase):
 
 class FsPupTestCase(BasePupTestCase):
     def test_install_pup_no_dependencies(self):
-        no_dep_pup = self._create_fs_pup('sheepdog.no-dependencies-pup')
+        no_dep_pup = self._create_fs_pup('sheepdoge.no-dependencies-pup')
         no_dep_pup.install()
 
         self._assert_pup_installed(no_dep_pup)

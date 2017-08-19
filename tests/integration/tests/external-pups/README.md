@@ -1,3 +1,3 @@
 # external-pups
 
-An integration test to ensure sheepdog can successfully install external pups.
+An integration test to ensure sheepdoge can successfully install external pups.

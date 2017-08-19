@@ -2,7 +2,7 @@
 
 # Note, this script should be run in the docker container.
 
-# Check sheepdog enacted the proper state on the docker container.
+# Check sheepdoge enacted the proper state on the docker container.
 # In this context, checking that the proper secrets were written to a file.
 # Look at kennel-trivial-sample/vars/*.yml to determine the variable values.
 

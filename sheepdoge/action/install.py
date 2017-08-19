@@ -1,8 +1,8 @@
 """Module for code relating to installing pups for a kennel."""
 
-from sheepdog.action import Action
-from sheepdog.kennel import Kennel
-from sheepdog.pup import Pup
+from sheepdoge.action import Action
+from sheepdoge.kennel import Kennel
+from sheepdoge.pup import Pup
 
 
 class InstallAction(Action):

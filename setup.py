@@ -1,14 +1,14 @@
-"""Configuration for the `sheepdog` pip package."""
+"""Configuration for the `sheepdoge` pip package."""
 
 from setuptools import setup
 
-GITHUB_URL = 'https://github.com/mattjmcnaughton/sheepdog'
+GITHUB_URL = 'https://github.com/mattjmcnaughton/sheepdoge'
 
 # @TODO(mattjmcnaughton) determine this value dynamically.
 VERSION = '0.1.0'
 
 setup(
-    name='sheepdog',
+    name='sheepdoge',
     version=VERSION,
     description='Manage your personal Unix machine(s) with Ansible.',
     url=GITHUB_URL,
@@ -19,11 +19,11 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
-        'License :: OSI Approved :: Apache License',
+        'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python :: 2.7'
     ],
     keywords=['provisioning', 'automation'],
-    packages=['sheepdog'],
+    packages=['sheepdoge'],
     install_requires=[
         'ansible>=2.0,<3.0',
         'click>=6.0,<7.0',
@@ -31,6 +31,6 @@ setup(
     ],
     python_requires='>=2.7, <3',
     entry_points={
-        'console_scripts': ['sheepdog = sheepdog.cli:main']
+        'console_scripts': ['sheepdoge = sheepdoge.cli:main']
     }
 )

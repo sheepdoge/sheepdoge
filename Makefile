@@ -1,5 +1,5 @@
 lint:
-	pylint ./sheepdog
+	pylint ./sheepdoge
 
 unit_tests:
 	nose2 -s tests/unit
