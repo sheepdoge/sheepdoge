@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 GITHUB_URL = 'https://github.com/mattjmcnaughton/sheepdoge'
 
 # @TODO(mattjmcnaughton) determine this value dynamically.
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 
 setup(
     name='sheepdoge',
@@ -26,6 +26,7 @@ setup(
     packages=find_packages(where='.', exclude=['tests*']),
     install_requires=[
         'ansible>=2.0,<3.0',
+        'configparser>=3.0',
         'click>=6.0,<7.0',
         'PyYaml>=3.0,<4.0'
     ],
