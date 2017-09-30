@@ -5,7 +5,7 @@ from setuptools import setup
 GITHUB_URL = 'https://github.com/mattjmcnaughton/sheepdoge'
 
 # @TODO(mattjmcnaughton) determine this value dynamically.
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 setup(
     name='sheepdoge',

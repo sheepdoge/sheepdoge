@@ -2,4 +2,4 @@
 `sheepdoge.`
 """
 
-from .cli import cli
+from sheepdoge.cli import cli
