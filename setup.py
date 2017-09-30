@@ -1,11 +1,11 @@
 """Configuration for the `sheepdoge` pip package."""
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 GITHUB_URL = 'https://github.com/mattjmcnaughton/sheepdoge'
 
 # @TODO(mattjmcnaughton) determine this value dynamically.
-VERSION = '0.1.1'
+VERSION = '0.1.2'
 
 setup(
     name='sheepdoge',
@@ -23,7 +23,7 @@ setup(
         'Programming Language :: Python :: 2.7'
     ],
     keywords=['provisioning', 'automation'],
-    packages=['sheepdoge'],
+    packages=find_packages(where='.', exclude=['tests*']),
     install_requires=[
         'ansible>=2.0,<3.0',
         'click>=6.0,<7.0',

@@ -6,6 +6,8 @@
 # argument, it does not automatically update the `setup.py` file. The releaser
 # must make those updates manually before running this script.
 
+set -e
+
 VERSION_NUMBER=
 
 release::check_version_number_updated_in_setup() {
