@@ -22,15 +22,15 @@ release::check_version_number_updated_in_setup() {
 }
 
 release::build_sdist() {
-    python setup.py sdist
+    pipenv run python setup.py sdist
 }
 
 release::build_bdist_wheel() {
-    python setup.py bdist_wheel
+    pipenv run python setup.py bdist_wheel
 }
 
 release::upload_with_twine() {
-    twine upload dist/*
+    pipenv run twine upload dist/*
 }
 
 release::push_git_tag() {

@@ -1,8 +1,11 @@
+install:
+	pipenv install --two --dev
+
 lint:
-	pylint ./sheepdoge
+	pipenv run pylint ./sheepdoge
 
 unit_tests:
-	nose2 -s tests/unit
+	pipenv run nose2 -s tests/unit
 
 integration_tests:
 	./tests/integration/run_integration_tests.sh

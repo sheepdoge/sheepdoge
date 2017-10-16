@@ -23,7 +23,6 @@ cp -r "$SD/../../kennels/kennel-external-pups" "$TMP_SCRATCH/kennels/kennel-exte
 mkdir "$TMP_SCRATCH/pups"
 cp -r "$SD/../../pups/pup-base" "$TMP_SCRATCH/pups/pup-base"
 cp "$SD/../../../../sheepdoge_runner.py" "$TMP_SCRATCH/"
-cp "$SD/../../../../requirements.txt" "$TMP_SCRATCH/"
 cp "$SD/../../../../setup.py" "$TMP_SCRATCH/"
 cp -r "$SD/../../../../sheepdoge" "$TMP_SCRATCH/sheepdoge"
 

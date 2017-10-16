@@ -1,0 +1,28 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+"e1839a8" = {path = ".", editable = true}
+ansible = ">=2.0,<3.0"
+configparser = ">=3.0"
+click = ">=6.0,<7.0"
+pyyaml = ">=3.0,<4.0"
+
+
+[dev-packages]
+
+"nose2" = "<=1.0"
+pylint = ">=1.0,<2.0"
+mock = ">=2.0,<3.0"
+wheel = "*"
+twine = "*"
+
+
+[requires]
+
+python_version = "2.7"

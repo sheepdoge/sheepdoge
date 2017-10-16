@@ -23,7 +23,6 @@ cp -r "$SD/../../pups/pup-no-special-tag" "$TMP_SCRATCH/pups/pup-no-special-tag"
 cp -r "$SD/../../pups/pup-cron" "$TMP_SCRATCH/pups/pup-cron"
 cp -r "$SD/../../pups/pup-bootstrap" "$TMP_SCRATCH/pups/pup-bootstrap"
 cp "$SD/../../../../sheepdoge_runner.py" "$TMP_SCRATCH/"
-cp "$SD/../../../../requirements.txt" "$TMP_SCRATCH/"
 cp "$SD/../../../../setup.py" "$TMP_SCRATCH/"
 cp -r "$SD/../../../../sheepdoge" "$TMP_SCRATCH/sheepdoge"
 
