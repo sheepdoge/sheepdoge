@@ -7,9 +7,6 @@ docs/_build
 
 *.egg-info
 
-.venv
-.python-version
-
 .idea
 *.iml
 
