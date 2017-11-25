@@ -5,7 +5,8 @@ import click
 from sheepdoge.action.install import InstallAction
 from sheepdoge.action.run import RunAction
 from sheepdoge.app import Sheepdoge
-from sheepdoge.config import Config, KennelRunModes
+from sheepdoge.config import Config
+from sheepdoge.kennel import Kennel, KennelRunModes
 
 
 def _initialize_config(config_file, config_options=None):
@@ -41,13 +42,10 @@ def install(config_file):
                                  KennelRunModes.CRON]))
 @click.option('--config-file', default='kennel.cfg')
 def run(run_mode, config_file):
-    config_options = {
-        'kennel_run_mode': run_mode
-    }
+    _initialize_config(config_file)
 
-    _initialize_config(config_file, config_options)
-
-    run_action = RunAction()
+    kennel = Kennel(run_mode)
+    run_action = RunAction(kennel)
     Sheepdoge(run_action).run()
 
 
