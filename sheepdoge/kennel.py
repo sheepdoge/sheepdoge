@@ -20,11 +20,21 @@ class Kennel(object):
         ansible_playbook_cmd = [
             'ansible-playbook',
             self._config.get('kennel_playbook_path'),
-            '--vault-password-file={}'.format(
-                self._config.get('vault_password_file')),
             RUN_MODE_TO_TAGS[self._config.get('kennel_run_mode')]
         ]
+
+        self._append_vault_password_file_flag_if_file_exists(
+            ansible_playbook_cmd)
 
         ShellRunner(ansible_playbook_cmd).run(env_additions={
             'ANSIBLE_ROLES_PATH': self._config.get('kennel_roles_path')
         })
+
+    def _append_vault_password_file_flag_if_file_exists(self,
+                                                        ansible_playbook_cmd):
+        password_file = self._config.get('vault_password_file')
+
+        if password_file:
+            ansible_playbook_cmd.append(
+                '--vault-password-file={}'.format(password_file)
+            )

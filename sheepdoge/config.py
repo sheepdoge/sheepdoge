@@ -1,8 +1,9 @@
 from configparser import ConfigParser, NoOptionError
 import os
 
-from sheepdoge.exception import (SheepdogeConfigurationAlreadyInitializedException,
-                                 SheepdogeConfigurationNotInitializedException)
+from sheepdoge.exception import (
+    SheepdogeConfigurationAlreadyInitializedException,
+    SheepdogeConfigurationNotInitializedException)
 
 
 class KennelRunModes(object):
@@ -26,7 +27,7 @@ DEFAULTS = {
     'kennel_roles_path': '.kennel_roles',
     'kennel_run_mode': KennelRunModes.NORMAL,
     'pupfile_path': 'pupfile.yml',
-    'vault_password_file': '~/.sheepdoge/vault_password_file.txt'
+    'vault_password_file': None
 }
 
 
@@ -40,7 +41,8 @@ class Config(object):
     @classmethod
     def clear_config_singleton(cls):
         """Delete the current configuration singleton to allow the
-        initialization of a new one. This method is predominantly used during test.
+        initialization of a new one. This method is predominantly used
+        during test.
         """
         cls._config = None
 
@@ -92,7 +94,6 @@ class Config(object):
         cls._set_calculated_config_values(config_dict)
 
         config_instance = cls(config_dict)
-
         cls._config = config_instance
 
     @classmethod
@@ -116,7 +117,7 @@ class Config(object):
 
                 config_dict[currently_defined_key] = config_file_value
             except NoOptionError:
-                pass # If the value isn't specified, skip
+                pass  # If the value isn't specified, skip
 
     @classmethod
     def _set_config_option_values(cls, config_dict, config_options):

@@ -43,7 +43,6 @@ class KennelTestCase(unittest.TestCase):
 
         for expected_arg in {'ansible-playbook',
                              'kennel.yml',
-                             '--vault-password-file',
                              '--skip-tags="bootstrap"'}:
             self.assertIn(expected_arg, ansible_playbook_cmd)
 
@@ -109,3 +108,41 @@ class KennelTestCase(unittest.TestCase):
         ansible_playbook_cmd = check_call_args[0]
 
         self.assertIn('--tags="cron"', ansible_playbook_cmd)
+
+    @mock.patch('subprocess.check_call')
+    def test_kennel_run_include_vault_password_file(self, mock_check_call):
+        """Test that we do attempt to pass a vault password file to ansible
+        when we have configured one.
+        """
+        Config.clear_config_singleton()
+        Config.initialize_config_singleton(config_options={
+            'vault_password_file': '/tmp/fake-password.txt'
+        })
+
+        kennel = Kennel()
+        kennel.run()
+
+        self.assertEqual(mock_check_call.call_count, 1)
+
+        check_call_args, check_call_kwargs = mock_check_call.call_args
+        ansible_playbook_cmd = check_call_args[0]
+
+        self.assertTrue('--vault-password-file' in ansible_playbook_cmd)
+
+    @mock.patch('subprocess.check_call')
+    def test_kennel_run_not_include_vault_password_file(self, mock_check_call):
+        """Test that we don't attempt to pass a vault password file to ansible
+        when we haven't configured one.
+        """
+        Config.clear_config_singleton()
+        Config.initialize_config_singleton()
+
+        kennel = Kennel()
+        kennel.run()
+
+        self.assertEqual(mock_check_call.call_count, 1)
+
+        check_call_args, check_call_kwargs = mock_check_call.call_args
+        ansible_playbook_cmd = check_call_args[0]
+
+        self.assertFalse('--vault-password-file' in ansible_playbook_cmd)

@@ -40,6 +40,20 @@ class ConfigTestCase(unittest.TestCase):
 
         self.assertEqual(config.get('pupfile_path'), config_file_pupfile_path)
 
+    def test_initialize_config_with_config_file_and_non_default_options(self):
+        config_file_vault_password_file = '/tmp/test.txt'
+
+        config_file_contents = """
+        [kennel]
+        vault_password_file={}
+        """.format(config_file_vault_password_file)
+
+        Config.initialize_config_singleton(config_file_contents=config_file_contents)
+        config = Config.get_config_singleton()
+
+        self.assertEqual(config.get('vault_password_file'),
+                         config_file_vault_password_file)
+
     def test_initialize_config_with_config_option_values(self):
         config_options_pupfile_path = 'config_pupfile.yml'
 
