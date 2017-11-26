@@ -36,5 +36,5 @@ class ShellRunner(object):
             )
         except subprocess.CalledProcessError as err:
             raise SheepdogeShellRunnerException(
-                '{} failed: {}'.format(self._cmd_as_str, err.message)
+                '{} failed: {}'.format(self._cmd_as_str, str(err))
             )

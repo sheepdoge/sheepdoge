@@ -45,7 +45,6 @@
       bash -c "sheepdoge install && sheepdoge run --run-mode cron" >>
       {{ sheepdoge_cron_log_path }} 2>&1
   when: use_virtualenv and not use_bashrc
-  notify: restart cron
 
 - name: Run sheepdoge with bashrc.
   cron:
@@ -58,7 +57,6 @@
       bash -c ". ~/.bashrc && sheepdoge install && sheepdoge run --run-mode cron" >>
       {{ sheepdoge_cron_log_path }} 2>&1
   when: use_bashrc and not use_virtualenv
-  notify: restart cron
 
 - name: Run sheepdoge without virtualenv or bashrc.
   cron:
@@ -71,4 +69,3 @@
       bash -c "sheepdoge install && sheepdoge run --run-mode cron" >>
       {{ sheepdoge_cron_log_path }} 2>&1
   when: not use_virtualenv and not use_bashrc
-  notify: restart cron

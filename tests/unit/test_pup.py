@@ -4,6 +4,8 @@ import shutil
 import tempfile
 import unittest
 
+from six import iteritems
+
 from sheepdoge.config import Config
 from sheepdoge.pup import (AnsibleDependencies, FsPup, GalaxyPup, GitPup,
                           Pup, PupDependencies, PupfileEntry,
@@ -160,7 +162,7 @@ class PupDependenciesTestCase(unittest.TestCase):
             'requirements.yml': AnsibleDependencies
         }
 
-        for filename, expected_type in filename_to_expected_type.iteritems():
+        for filename, expected_type in iteritems(filename_to_expected_type):
             self.assertIsInstance(
                 PupDependencies.create_from_dep_file_path(filename),
                 expected_type

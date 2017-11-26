@@ -84,7 +84,7 @@ small refactorings for cleaner code are all great places to start :)
 (https://github.com/kennethreitz/pipenv) by running:
 
 ```
-pipenv install --two --dev
+make install
 ```
 
 Note, that if you are adding a production dependency to `sheepdoge`, please be

@@ -2,9 +2,6 @@
 #
 # Provision the docker container with sheepdoge.
 
-DIR=/test/kennels/kennel-dependencies
-
-export LC_ALL=C.UTF-8
-export LANG=C.UTF-8
+DIR=/test/kennels/kennel-trivial-sample
 
 cd $DIR; ../../sheepdoge_runner.py install && ../../sheepdoge_runner.py run --run-mode bootstrap

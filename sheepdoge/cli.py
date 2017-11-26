@@ -1,5 +1,7 @@
 """The point of entry for the sheepdoge pip package console script"""
 
+import io
+
 import click
 
 from sheepdoge.action.install import InstallAction
@@ -12,7 +14,8 @@ from sheepdoge.kennel import Kennel, KennelRunModes
 def _initialize_config(config_file, config_options=None):
     config_options = config_options or {}
 
-    with open(config_file, 'r') as config_file_open_for_reading:
+    with io.open(config_file, 'r',
+                 encoding='utf-8') as config_file_open_for_reading:
         config_file_contents = config_file_open_for_reading.read()
 
     Config.initialize_config_singleton(

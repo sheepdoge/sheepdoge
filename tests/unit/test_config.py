@@ -1,5 +1,7 @@
 import unittest
 
+from six import iteritems
+
 from sheepdoge.config import (Config, DEFAULTS)
 from sheepdoge.exception import (SheepdogeConfigurationAlreadyInitializedException,
                                  SheepdogeConfigurationNotInitializedException)
@@ -25,12 +27,12 @@ class ConfigTestCase(unittest.TestCase):
         Config.initialize_config_singleton()
         config = Config.get_config_singleton()
 
-        for default_key, default_value in DEFAULTS.iteritems():
+        for default_key, default_value in iteritems(DEFAULTS):
             self.assertEqual(config.get(default_key), default_value)
 
     def test_initialize_config_with_config_file_values(self):
         config_file_pupfile_path = 'config_pupfile.yml'
-        config_file_contents = """
+        config_file_contents = u"""
         [kennel]
         pupfile_path={}
         """.format(config_file_pupfile_path)
@@ -43,7 +45,7 @@ class ConfigTestCase(unittest.TestCase):
     def test_initialize_config_with_config_file_and_non_default_options(self):
         config_file_vault_password_file = '/tmp/test.txt'
 
-        config_file_contents = """
+        config_file_contents = u"""
         [kennel]
         vault_password_file={}
         """.format(config_file_vault_password_file)
