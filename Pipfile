@@ -17,8 +17,12 @@ six = ">=1.0,<2.0"
 
 [dev-packages]
 
+"backports.functools-lru-cache" = "*"
+"enum34" = "*"
 "nose2" = "<=1.0"
-pylint = ">=1.0,<2.0"
+funcsigs = "*"
 mock = ">=2.0,<3.0"
-wheel = "*"
+pylint = ">=1.0,<2.0"
+singledispatch = "*"
 twine = "*"
+wheel = "*"

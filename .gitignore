@@ -13,3 +13,5 @@ docs/_build
 *.retry
 
 tmp_scratch
+
+Pipfile.lock

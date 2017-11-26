@@ -32,7 +32,7 @@ class ConfigTestCase(unittest.TestCase):
 
     def test_initialize_config_with_config_file_values(self):
         config_file_pupfile_path = 'config_pupfile.yml'
-        config_file_contents = """
+        config_file_contents = u"""
         [kennel]
         pupfile_path={}
         """.format(config_file_pupfile_path)
@@ -45,7 +45,7 @@ class ConfigTestCase(unittest.TestCase):
     def test_initialize_config_with_config_file_and_non_default_options(self):
         config_file_vault_password_file = '/tmp/test.txt'
 
-        config_file_contents = """
+        config_file_contents = u"""
         [kennel]
         vault_password_file={}
         """.format(config_file_vault_password_file)
