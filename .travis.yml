@@ -4,6 +4,7 @@ language: python
 cache: pip
 
 python:
+  - '3.6'
   - '2.7'
 
 services:
@@ -15,13 +16,12 @@ before_install:
 
 install:
   - pip install pipenv
-  - make install
+  - pipenv install --dev
 
 script:
   - make lint
   - make unit_tests
   - make integration_tests
-  - pipenv check
 
 notifications:
   email: false

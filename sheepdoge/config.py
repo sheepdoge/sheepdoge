@@ -89,7 +89,7 @@ class Config(object):
     @classmethod
     def _set_config_file_values(cls, config_dict, config_file_contents):
         config_parser = ConfigParser()
-        config_parser.read_string(config_file_contents.decode('utf-8'))
+        config_parser.read_string(config_file_contents)
 
         kennel_cfg_section = 'kennel'
 

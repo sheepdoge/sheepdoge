@@ -12,6 +12,7 @@ ansible = ">=2.0,<3.0"
 configparser = ">=3.0"
 click = ">=6.0,<7.0"
 pyyaml = ">=3.0,<4.0"
+six = ">=1.0,<2.0"
 
 
 [dev-packages]
@@ -21,8 +22,3 @@ pylint = ">=1.0,<2.0"
 mock = ">=2.0,<3.0"
 wheel = "*"
 twine = "*"
-
-
-[requires]
-
-python_version = "2.7"

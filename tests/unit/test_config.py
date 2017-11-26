@@ -1,5 +1,7 @@
 import unittest
 
+from six import iteritems
+
 from sheepdoge.config import (Config, DEFAULTS)
 from sheepdoge.exception import (SheepdogeConfigurationAlreadyInitializedException,
                                  SheepdogeConfigurationNotInitializedException)
@@ -25,7 +27,7 @@ class ConfigTestCase(unittest.TestCase):
         Config.initialize_config_singleton()
         config = Config.get_config_singleton()
 
-        for default_key, default_value in DEFAULTS.iteritems():
+        for default_key, default_value in iteritems(DEFAULTS):
             self.assertEqual(config.get(default_key), default_value)
 
     def test_initialize_config_with_config_file_values(self):

@@ -20,7 +20,12 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Build Tools',
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 2.7'
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6'
     ],
     keywords=['provisioning', 'automation'],
     packages=find_packages(where='.', exclude=['tests*']),
@@ -28,9 +33,9 @@ setup(
         'ansible>=2.0,<3.0',
         'configparser>=3.0',
         'click>=6.0,<7.0',
-        'PyYaml>=3.0,<4.0'
+        'PyYaml>=3.0,<4.0',
+        'six>=1.0,<2.0'
     ],
-    python_requires='>=2.7, <3',
     entry_points={
         'console_scripts': ['sheepdoge = sheepdoge.cli:main']
     }
