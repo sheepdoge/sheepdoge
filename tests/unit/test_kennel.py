@@ -128,3 +128,20 @@ class KennelTestCase(unittest.TestCase):
         ansible_playbook_cmd = check_call_args[0]
 
         self.assertFalse('--vault-password-file' in ansible_playbook_cmd)
+
+    @mock.patch('subprocess.check_call')
+    def test_kennel_run_include_additional_ansible_arguments(self, mock_check_call):
+        """Test that we accurately include additonal ansible arguments.
+        """
+        additional_ansible_args = '-K'
+        kennel = Kennel(KennelRunModes.NORMAL,
+                        additional_ansible_args=additional_ansible_args)
+        kennel.run()
+
+        self.assertEqual(mock_check_call.call_count, 1)
+
+        check_call_args, check_call_kwargs = mock_check_call.call_args
+        ansible_playbook_cmd = check_call_args[0]
+
+        self.assertFalse('--vault-password-file' in ansible_playbook_cmd)
+        self.assertEqual(' -K', ansible_playbook_cmd[-3:])

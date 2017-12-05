@@ -29,8 +29,9 @@ class Kennel(object):
             shutil.rmtree(kennel_roles_path)
             os.mkdir(kennel_roles_path)
 
-    def __init__(self, kennel_run_mode, config=None):
+    def __init__(self, kennel_run_mode, additional_ansible_args='', config=None):
         self._kennel_run_mode = kennel_run_mode
+        self._additional_ansible_args = additional_ansible_args
         self._config = config or Config.get_config_singleton()
 
     def run(self):
@@ -42,6 +43,9 @@ class Kennel(object):
 
         self._append_vault_password_file_flag_if_file_exists(
             ansible_playbook_cmd)
+
+        if self._additional_ansible_args:
+            ansible_playbook_cmd += self._additional_ansible_args.split(' ')
 
         ShellRunner(ansible_playbook_cmd).run(env_additions={
             'ANSIBLE_ROLES_PATH': self._config.get('kennel_roles_path')
