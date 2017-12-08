@@ -8,6 +8,7 @@ from sheepdoge.action.install import InstallAction
 from sheepdoge.action.run import RunAction
 from sheepdoge.app import Sheepdoge
 from sheepdoge.config import Config
+from sheepdoge.pup import Pup
 from sheepdoge.kennel import Kennel, KennelRunModes
 
 
@@ -34,7 +35,7 @@ def cli():
 def install(config_file):
     _initialize_config(config_file)
 
-    install_action = InstallAction()
+    install_action = InstallAction(Kennel, Pup)
     Sheepdoge(install_action).run()
 
 
