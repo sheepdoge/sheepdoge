@@ -2,7 +2,7 @@ from unittest import TestCase
 from mock import MagicMock
 
 from sheepdoge.config import Config
-from sheepdoge.action.install import InstallAction
+from sheepdoge.action.install import InstallAction, ParallelInstallAction
 
 
 class InstallActionTestCase(TestCase):
@@ -13,6 +13,12 @@ class InstallActionTestCase(TestCase):
         Config.initialize_config_singleton()
 
     def test_install_action_installs_pups(self):
+        self._test_install_action_installs_pups(InstallAction)
+
+    def test_parallel_install_action_installs_pups(self):
+        self._test_install_action_installs_pups(ParallelInstallAction)
+
+    def _test_install_action_installs_pups(self, install_action_cls):
         mock_kennel_cls = MagicMock()
 
         individual_pup_mocks = [
@@ -22,8 +28,8 @@ class InstallActionTestCase(TestCase):
         mock_pup_cls = MagicMock()
         mock_pup_cls.parse_pupfile_into_pups.return_value = individual_pup_mocks
 
-        install_action = InstallAction(kennel_cls=mock_kennel_cls,
-                                       pup_cls=mock_pup_cls)
+        install_action = install_action_cls(kennel_cls=mock_kennel_cls,
+                                            pup_cls=mock_pup_cls)
 
         install_action.run()
 
