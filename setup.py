@@ -34,7 +34,8 @@ setup(
         'configparser>=3.0',
         'click>=6.0,<7.0',
         'PyYaml>=3.0,<4.0',
-        'six>=1.0,<2.0'
+        'six>=1.0,<2.0',
+        'futures>=3.0,<4.0; python_version == "2.7"'
     ],
     entry_points={
         'console_scripts': ['sheepdoge = sheepdoge.cli:main']

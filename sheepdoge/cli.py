@@ -4,10 +4,11 @@ import io
 
 import click
 
-from sheepdoge.action.install import InstallAction
+from sheepdoge.action.install import InstallAction, ParallelInstallAction
 from sheepdoge.action.run import RunAction
 from sheepdoge.app import Sheepdoge
 from sheepdoge.config import Config
+from sheepdoge.pup import Pup
 from sheepdoge.kennel import Kennel, KennelRunModes
 
 
@@ -31,10 +32,16 @@ def cli():
 
 @cli.command()
 @click.option('--config-file', default='kennel.cfg')
-def install(config_file):
+@click.option('--parallel/--no-parallel', default=True)
+def install(config_file, parallel):
     _initialize_config(config_file)
 
-    install_action = InstallAction()
+    install_cls = InstallAction
+
+    if parallel:
+        install_cls = ParallelInstallAction
+
+    install_action = install_cls(Kennel, Pup)
     Sheepdoge(install_action).run()
 
 
