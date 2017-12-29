@@ -4,4 +4,4 @@
 
 DIR=/test/kennels/kennel-trivial-sample
 
-cd $DIR; ../../sheepdoge_runner.py install && ../../sheepdoge_runner.py run --run-mode bootstrap
+cd $DIR; ../../sheepdoge_runner.py install && ../../sheepdoge_runner.py run

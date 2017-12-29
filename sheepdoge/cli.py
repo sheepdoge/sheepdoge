@@ -9,7 +9,7 @@ from sheepdoge.action.run import RunAction
 from sheepdoge.app import Sheepdoge
 from sheepdoge.config import Config
 from sheepdoge.pup import Pup
-from sheepdoge.kennel import Kennel, KennelRunModes
+from sheepdoge.kennel import Kennel
 
 
 def _initialize_config(config_file, config_options=None):
@@ -46,16 +46,12 @@ def install(config_file, parallel):
 
 
 @cli.command()
-@click.option('--run-mode', default=KennelRunModes.NORMAL,
-              type=click.Choice([KennelRunModes.NORMAL,
-                                 KennelRunModes.BOOTSTRAP,
-                                 KennelRunModes.CRON]))
 @click.option('--ansible-args', type=str)
 @click.option('--config-file', default='kennel.cfg')
-def run(run_mode, ansible_args, config_file):
+def run(ansible_args, config_file):
     _initialize_config(config_file)
 
-    kennel = Kennel(run_mode, additional_ansible_args=ansible_args)
+    kennel = Kennel(additional_ansible_args=ansible_args)
     run_action = RunAction(kennel)
     Sheepdoge(run_action).run()
 

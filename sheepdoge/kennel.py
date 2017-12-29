@@ -5,22 +5,6 @@ from sheepdoge.config import Config
 from sheepdoge.utils import ShellRunner
 
 
-class KennelRunModes(object):
-    # Include everything except bootstrap tasks
-    NORMAL = 'normal'
-    # Run all tasks (including bootstrap tasks)
-    BOOTSTRAP = 'bootstrap'
-    # Run only the nightly cron tasks
-    CRON = 'cron'
-
-
-_RUN_MODE_TO_TAGS = {
-    KennelRunModes.NORMAL: '--skip-tags="bootstrap"',
-    KennelRunModes.BOOTSTRAP: '',
-    KennelRunModes.CRON: '--tags="cron"'
-}
-
-
 class Kennel(object):
     @staticmethod
     def refresh_roles(kennel_roles_path):
@@ -29,16 +13,14 @@ class Kennel(object):
             shutil.rmtree(kennel_roles_path)
             os.mkdir(kennel_roles_path)
 
-    def __init__(self, kennel_run_mode, additional_ansible_args='', config=None):
-        self._kennel_run_mode = kennel_run_mode
+    def __init__(self, additional_ansible_args='', config=None):
         self._additional_ansible_args = additional_ansible_args
         self._config = config or Config.get_config_singleton()
 
     def run(self):
         ansible_playbook_cmd = [
             'ansible-playbook',
-            self._config.get('kennel_playbook_path'),
-            _RUN_MODE_TO_TAGS[self._kennel_run_mode]
+            self._config.get('kennel_playbook_path')
         ]
 
         self._append_vault_password_file_flag_if_file_exists(

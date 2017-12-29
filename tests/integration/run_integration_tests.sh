@@ -15,10 +15,9 @@ SD="$(pwd)/$(dirname $0)"
 
 run_integration_tests::sequential() {
     cd $SD/tests/trivial; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
-    cd $SD/tests/cron-bootstrap; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
+    cd $SD/tests/trivial-python2; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
     cd $SD/tests/dependencies; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
     cd $SD/tests/external-pups; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
-    cd $SD/tests/update-kennel-before-cron; /bin/bash ./run_test.sh $INTERACTIVE_FLAG;
 }
 
 run_integration_tests::parallel() {
