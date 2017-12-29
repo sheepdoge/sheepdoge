@@ -1,5 +1,0 @@
----
-- { name: sheepdoge.pup-base, location: fs+../../pups/pup-base }
-- { name: sheepdoge.pup-no-special-tag, location: fs+../../pups/pup-no-special-tag }
-- { name: sheepdoge.pup-bootstrap, location: fs+../../pups/pup-bootstrap }
-- { name: sheepdoge.pup-cron, location: fs+../../pups/pup-cron }

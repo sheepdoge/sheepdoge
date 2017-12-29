@@ -1,2 +1,0 @@
----
-encrypted_nightly: "{{ pup_cron_cron_vault_encrypted_nightly }}"

@@ -1,6 +1,2 @@
 ---
-sheepdoge_virtualenv_path: "{{ pup_base_vars_sheepdoge_virtualenv_path }}"
-sheepdoge_use_virtualenv_for_cron: "{{ pup_base_vars_sheepdoge_use_virtualenv_for_cron }}"
-sheepdoge_use_bashrc_for_cron: "{{ pup_base_vars_sheepdoge_use_bashrc_for_cron }}"
-sheepdoge_cron_interval_minutes: "{{ pup_base_vars_sheepdoge_cron_interval_minutes }}"
-sheepdoge_cron_interval_hours: "{{ pup_base_vars_sheepdoge_cron_interval_hours }}"
+hostname: "{{ pup_base_vars_hostname | default(none) }}"

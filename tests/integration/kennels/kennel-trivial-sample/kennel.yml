@@ -9,13 +9,9 @@
   tasks:
     - include_vars:
         file: vars/cron_vault.yml
-      tags:
-        - cron
 
     - include_vars:
         file: vars/bootstrap_vault.yml
-      tags:
-        - bootstrap
 
     - include_role:
         name: sheepdoge.pup-base
