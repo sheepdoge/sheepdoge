@@ -1,5 +1,12 @@
 ---
-- include: install_cron-Debian.yml
-  when: ansible_os_family == 'Debian'
 
-- include: setup_cron.yml
+- name: set the machine's hostname
+  hostname:
+    name: "{{ hostname }}"
+  when: not(
+          (hostname is undefined)
+          or
+          (hostname is none)
+          or
+          (hostname | trim == '')
+        )

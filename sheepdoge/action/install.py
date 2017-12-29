@@ -28,9 +28,9 @@ class InstallAction(Action):
 
 class ParallelInstallAction(InstallAction):
     """An InstallAction which downloads pups in parallel."""
-    def __init__(self, kennel_cls, pup_cls, max_workers=None, *args, **kwargs):
+    def __init__(self, kennel_cls, pup_cls, max_workers=None, **kwargs):
         super(ParallelInstallAction, self).__init__(
-            kennel_cls, pup_cls, *args, **kwargs)
+            kennel_cls, pup_cls, **kwargs)
 
         self._max_workers = (max_workers or
                              self._get_default_max_workers_from_cores())

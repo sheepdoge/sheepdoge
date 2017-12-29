@@ -1,2 +1,0 @@
----
-unencrypted_var: "{{ pup_no_special_tag_vars_unencrypted_var }}"

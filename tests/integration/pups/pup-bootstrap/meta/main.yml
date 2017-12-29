@@ -1,7 +1,0 @@
----
-galaxy_info:
-  author: mattjmcnaughton
-  description: Trivial file which creates a file with an encrypted secret.
-  license: Apache
-
-dependencies: []

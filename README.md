@@ -9,7 +9,7 @@ Manage your personal Unix machine(s) with [Ansible](https://www.ansible.com/)
 With *sheepdoge*, provisioning a personal Unix machine can be as easy as:
 
 ```bash
-$ sheepdoge install && sheepdoge run --bootstrap
+$ sheepdoge install && sheepdoge run
 ```
 
 For more info on how *sheepdoge* works, read on. If you want to get your hands
@@ -45,7 +45,7 @@ personal workstations. It provides the following benefits:
    *sheepdoge* prevents configuration drift by regularly running the most recent
    version of your *kennel* on all of your machines.
 3. **Get up and going immediately**: Say your hard drive becomes corrupt,
-   so you buy a new computer. Run `sheepdoge install && sheepdoge run --bootstrap`,
+   so you buy a new computer. Run `sheepdoge install && sheepdoge run`,
    and you're new machine is ready to go!
 4. **Secret management**: Secret management across multiple machines is a pain.
    It often leads to a lot of copy and paste or manually sending secrets
