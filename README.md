@@ -1,7 +1,7 @@
 # sheepdoge
 
 [![Build
-Status](https://travis-ci.org/mattjmcnaughton/sheepdoge.svg?branch=master)](https://travis-ci.org/mattjmcnaughton/sheepdoge)
+Status](https://travis-ci.org/sheepdoge/sheepdoge.svg?branch=master)](https://travis-ci.org/sheepdoge/sheepdoge)
 
 Manage your personal Unix machine(s) with [Ansible](https://www.ansible.com/)
 (aka [boxen](https://github.com/boxen/boxen) but for Ansible).
@@ -74,8 +74,8 @@ by step instructions to creating your first pup.
 ## Contributing
 
 We appreciate and encourage any contributions to *sheepdoge* :dog: Please open an
-[issue](https://github.com/mattjmcnaughton/sheepdoge/issues) or [pull
-request](https://github.com/mattjmcnaughton/sheepdoge/pulls). It doesn't have to
+[issue](https://github.com/sheepdoge/sheepdoge/issues) or [pull
+request](https://github.com/sheepdoge/sheepdoge/pulls). It doesn't have to
 be a huge feature - documentation fixes/improvements, added test coverage, and
 small refactorings for cleaner code are all great places to start :)
 
@@ -99,5 +99,5 @@ please email mattjmcnaughton [@] gmail.com.
 ## License
 
 *sheepdoge* is licensed under the
-[Apache](https://github.com/mattjmcnaughton/sheepdoge/blob/master/LICENSE)
+[Apache](https://github.com/sheepdoge/sheepdoge/blob/master/LICENSE)
 license.
