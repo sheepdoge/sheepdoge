@@ -2,7 +2,7 @@
 
 from setuptools import setup, find_packages
 
-GITHUB_URL = 'https://github.com/mattjmcnaughton/sheepdoge'
+GITHUB_URL = 'https://github.com/sheepdoge/sheepdoge'
 
 # @TODO(mattjmcnaughton) determine this value dynamically.
 VERSION = '0.1.4'
