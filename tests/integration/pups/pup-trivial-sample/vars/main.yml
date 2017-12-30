@@ -1,4 +1,3 @@
 ---
-encrypted_boot: "{{ pup_trivial_sample_bootstrap_vault_encrypted_boot }}"
 encrypted_nightly: "{{ pup_trivial_sample_cron_vault_encrypted_nightly }}"
 unencrypted_var: "{{ pup_trivial_sample_vars_unencrypted_var }}"
