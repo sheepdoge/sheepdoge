@@ -1,2 +1,2 @@
 ---
-hostname: "{{ pup_base_vars_hostname | default(none) }}"
+hostname: "{{ pup_base_main_hostname | default(none) }}"
