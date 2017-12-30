@@ -1,15 +1,20 @@
 """Configuration for the `sheepdoge` pip package."""
 
+import ast
+import re
+
 from setuptools import setup, find_packages
 
 GITHUB_URL = 'https://github.com/sheepdoge/sheepdoge'
 
-# @TODO(mattjmcnaughton) determine this value dynamically.
-VERSION = '0.1.5'
+with open('sheepdoge/__version__.py', 'rb') as version_file:
+    file_contents = version_file.read().decode('utf-8')
+    version_re = re.compile(r'__version__\s+=\s+(.*)')
+    version = str(ast.literal_eval(version_re.search(file_contents).group(1)))
 
 setup(
     name='sheepdoge',
-    version=VERSION,
+    version=version,
     description='Manage your personal Unix machine(s) with Ansible.',
     url=GITHUB_URL,
     author='Matt McNaughton',
