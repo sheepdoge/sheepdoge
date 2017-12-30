@@ -10,6 +10,5 @@
     path: "{{ secret_file }}"
     line: "{{ item }}"
   with_items:
-    - "{{ encrypted_boot }}"
-    - "{{ encrypted_nightly }}"
+    - "{{ encrypted_test_var }}"
     - "{{ unencrypted_var }}"

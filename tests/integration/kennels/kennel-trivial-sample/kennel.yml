@@ -4,15 +4,10 @@
   hosts: localhost
 
   vars_files:
-    - vars/var.yml
+    - vars/main.yml
+    - vars/encrypted.yml
 
   tasks:
-    - include_vars:
-        file: vars/cron_vault.yml
-
-    - include_vars:
-        file: vars/bootstrap_vault.yml
-
     - include_role:
         name: sheepdoge.pup-base
 
