@@ -11,7 +11,7 @@ set -e
 VERSION_NUMBER=
 
 release::check_version_number_updated_in_setup() {
-    grep -q "$VERSION_NUMBER" setup.py
+    grep -q "$VERSION_NUMBER" sheepdoge/__version__.py
     exit_code=$?
 
     if [ "$exit_code" -ne 0 ]

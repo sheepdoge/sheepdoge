@@ -1,5 +1,4 @@
-"""Base sheepdoge module. Sets version and what is accessible through
-`sheepdoge.`
+"""Base sheepdoge module.
 """
 
 from sheepdoge.cli import cli

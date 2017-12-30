@@ -10,6 +10,7 @@ from sheepdoge.app import Sheepdoge
 from sheepdoge.config import Config
 from sheepdoge.pup import Pup
 from sheepdoge.kennel import Kennel
+from sheepdoge.__version__ import __version__
 
 
 def _initialize_config(config_file, config_options=None):
@@ -26,6 +27,7 @@ def _initialize_config(config_file, config_options=None):
 
 
 @click.group()
+@click.version_option(prog_name='sheepdoge', version=__version__)
 def cli():
     pass
 
