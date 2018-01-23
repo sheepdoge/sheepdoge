@@ -1,4 +1,5 @@
 from configparser import ConfigParser, NoOptionError
+from typing import Dict # pylint: disable=unused-import
 import os
 
 from sheepdoge.exception import (
@@ -11,7 +12,7 @@ DEFAULTS = {
     'kennel_roles_path': '.kennel_roles',
     'pupfile_path': 'pupfile.yml',
     'vault_password_file': None
-}
+} # type: Dict[str, str]
 
 
 class Config(object):
@@ -19,10 +20,16 @@ class Config(object):
     Additionally, we can only set the config values during initialization.
     Multiple different classes can access this single instance at a time.
     """
-    _config = None
+    _config = None # type: Config
+
+
+    def __init__(self, config_dict):
+        # type: (Dict[str, str]) -> None
+        self._config_dict = config_dict
 
     @classmethod
     def clear_config_singleton(cls):
+        # type: () -> None
         """Delete the current configuration singleton to allow the
         initialization of a new one. This method is predominantly used
         during test.
@@ -31,11 +38,11 @@ class Config(object):
 
     @classmethod
     def get_config_singleton(cls):
+        # type: () -> Config
         """Return the current config singleton instance. We must initialize
         the singleton before calling this method.
 
         :return: The singleton instance.
-        :rtype: Config
         """
         if cls._config is None:
             raise SheepdogeConfigurationNotInitializedException
@@ -44,6 +51,7 @@ class Config(object):
     @classmethod
     def initialize_config_singleton(cls, config_file_contents=None,
                                     config_options=None):
+        # type: (str, Dict[str, str]) -> None
         """Initialize the config singleton with the proper values. If we
         specify no additional values during configuration, then the config
         will contain all defaults. We can, in priority order, pass in the
@@ -56,15 +64,13 @@ class Config(object):
 
         :param config_file_contents: The str contents of the .cfg file
         containing kennel configuration.
-        :type: str
         :param config_options: The dict specifying the highest priority
         configuration values.
-        :type config_options: dict
         """
         if cls._config is not None:
             raise SheepdogeConfigurationAlreadyInitializedException()
 
-        config_dict = {}
+        config_dict = {} # type: Dict[str, str]
 
         cls._set_config_default_values(config_dict)
 
@@ -76,11 +82,11 @@ class Config(object):
 
         cls._set_calculated_config_values(config_dict)
 
-        config_instance = cls(config_dict)
-        cls._config = config_instance
+        cls._config = cls(config_dict)
 
     @classmethod
     def _set_config_default_values(cls, config_dict):
+        # type: (Dict[str, str]) -> None
         """Set defaults for all views here - they will be overwritten in the
         following steps if necessary.
         """
@@ -88,6 +94,7 @@ class Config(object):
 
     @classmethod
     def _set_config_file_values(cls, config_dict, config_file_contents):
+        # type: (Dict[str, str], str) -> None
         config_parser = ConfigParser()
         config_parser.read_string(config_file_contents)
 
@@ -104,10 +111,12 @@ class Config(object):
 
     @classmethod
     def _set_config_option_values(cls, config_dict, config_options):
+        # type: (Dict[str, str], Dict[str, str]) -> None
         config_dict.update(config_options)
 
     @classmethod
     def _set_calculated_config_values(cls, config_dict):
+        # type: (Dict[str, str]) -> None
         pupfile_path = config_dict['pupfile_path']
         pupfile_dir = os.path.dirname(os.path.realpath(pupfile_path))
 
@@ -121,13 +130,10 @@ class Config(object):
 
         config_dict.update(calculated_config)
 
-    def __init__(self, config_dict):
-        self._config_dict = config_dict
-
     def get(self, key):
+        # type: (str) -> str
         """Retrieve the value for the given configuration key.
 
         :param key: One of the available configuration options.
-        :type key: str
         """
         return self._config_dict[key]

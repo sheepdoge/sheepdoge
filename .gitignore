@@ -15,3 +15,5 @@ docs/_build
 tmp_scratch
 
 Pipfile.lock
+
+.mypy_cache
