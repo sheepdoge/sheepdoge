@@ -8,7 +8,10 @@ clean:
 	pipenv --rm
 	rm Pipfile.lock || true
 
-lint:
+typecheck:
+	pipenv run bash -c "which mypy >/dev/null && mypy ./sheepdoge"
+
+lint: typecheck
 	pipenv run pylint ./sheepdoge
 	pipenv check
 

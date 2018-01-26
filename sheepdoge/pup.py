@@ -3,6 +3,7 @@ from contextlib import contextmanager
 import os
 import shutil
 import tempfile
+from typing import Any, Dict, Iterable, Iterator, List, Tuple, Type # pylint: disable=unused-import
 
 import yaml
 
@@ -18,6 +19,7 @@ PupfileEntry = namedtuple('PupfileEntry', 'name path pup_type')
 
 
 def _pup_types_to_classes():
+    # type: () -> Dict[str, Type[Pup]]
     return {
         'fs': FsPup,
         'galaxy': GalaxyPup,
@@ -26,6 +28,7 @@ def _pup_types_to_classes():
 
 
 def _dependency_types_to_classes():
+    # type: () -> Dict[str, Type[PupDependencies]]
     return {
         'txt': PythonDependencies,
         'yml': AnsibleDependencies
@@ -40,8 +43,18 @@ class Pup(object):
     PYTHON_DEP_FILE = 'requirements.txt'
     ANSIBLE_DEP_FILE = 'requirements.yml'
 
+
+    def __init__(self, name, path, config=None):
+        # type: (str, str, Config) -> None
+        self._name = name
+        self._path = path
+        self._pup_dependencies = [] # type: List[PupDependencies]
+
+        self._config = config or Config.get_config_singleton()
+
     @classmethod
     def parse_pupfile_into_pups(cls, pupfile_path):
+        # type: (str) -> List[Pup]
         """Return a list of `Pup` objects for each pup we wish to install."""
         # Read in file and parse with yml
         with open(pupfile_path, 'r') as pupfile:
@@ -51,13 +64,12 @@ class Pup(object):
 
     @classmethod
     def parse_text_into_entries(cls, file_contents):
+        # type: (str) -> List[PupfileEntry]
         """Given the text of `pupfile.yml`, return the structured data we will
         iterate through to create individual `Pup` instances.
 
         :param file_contents: A string containing the contents of `pupfile.yml`.
-        :type file_contents: str
         :return: A list of structured pupfile entries.
-        :rtype: list of PupfileEntry
         """
         entries = []
 
@@ -74,21 +86,21 @@ class Pup(object):
 
     @staticmethod
     def _parse_location(location):
+        # type: (str) -> Tuple[str, str]
         split_location = location.split(LOCATION_SPLIT_CHAR)
 
         return split_location[0], split_location[1]
 
     @classmethod
     def create_from_entries(cls, entries):
+        # type: (Iterable[PupfileEntry]) -> List[Pup]
         """Create a pup based on a line in a `pupfile.yml`.
 
         Instantiates and returns a subclass of `Pup` for the specific type of
         pup we are installing (i.e. from local filesystem, git, ansible-galaxy).
 
         :param entries: The input entries from the parsed pupfile.
-        :type entries: list of dict
         :return: The specific pup instances we are installing.
-        :rtype: list of pup
         """
         pups = []
 
@@ -99,14 +111,8 @@ class Pup(object):
 
         return pups
 
-    def __init__(self, name, path, config=None):
-        self._name = name
-        self._path = path
-        self._pup_dependencies = []
-
-        self._config = config or Config.get_config_singleton()
-
     def to_dict(self):
+        # type: () -> Dict[str, Any]
         """Return a readable version of the pup"""
         # @TODO(mattjmcnaughton) Determine the best long term solution. Is it
         # defining `__repr__` or maybe `__eq__`?
@@ -117,16 +123,19 @@ class Pup(object):
         }
 
     def install(self):
+        # type: () -> None
         """Install all aspects of the pup.
         """
         pup_in_kennel_path = self._install_pup()
         self._install_pup_dependencies(pup_in_kennel_path)
 
     def _install_pup(self):
+        # type: () -> str
         """Download the pup onto the local file system."""
         raise NotImplementedError
 
     def _install_pup_dependencies(self, pup_in_kennel_path):
+        # type: (str) -> None
         """Install the dependencies for the pup (i.e. other ansible roles or
         python packages.
         """
@@ -141,6 +150,7 @@ class Pup(object):
 
     @classmethod
     def _get_dep_files(cls, pup_in_kennel_path):
+        # type: (str) -> Tuple[str, str]
         python_dep_file = os.path.join(pup_in_kennel_path, cls.PYTHON_DEP_FILE)
         ansible_dep_file = os.path.join(pup_in_kennel_path, cls.ANSIBLE_DEP_FILE)
 
@@ -155,6 +165,7 @@ class Pup(object):
     @staticmethod
     @contextmanager
     def _with_tmp_dir():
+        # type: () -> Iterator[str]
         tmp_dir_path = tempfile.mkdtemp()
 
         yield tmp_dir_path
@@ -170,6 +181,7 @@ class FsPup(Pup):
     pupfile.
     """
     def _install_pup(self):
+        # type: () -> str
         fs_pup_location = os.path.join(self._config.get('abs_pupfile_dir'),
                                        self._path)
 
@@ -185,6 +197,7 @@ class GitPup(Pup):
     """A pup for which the source lives in a remote git repo.
     """
     def _install_pup(self):
+        # type: () -> str
         with self._with_tmp_dir() as install_dir:
             install_path = os.path.join(install_dir, self._name)
 
@@ -211,6 +224,7 @@ class GalaxyPup(Pup):
     """A pup for which the source lives on ansible-galaxy.
     """
     def _install_pup(self):
+        # type: () -> str
         with self._with_tmp_dir() as install_dir:
             ansible_galaxy_cmd = [
                 'ansible-galaxy',
@@ -245,24 +259,25 @@ class PupDependencies(object):
     """
     @staticmethod
     def create_from_dep_file_path(dep_file_path):
+        # type: (str) -> PupDependencies
         """Given the path to a pup's dependency file, instantiate an instance of
         the appropriate subclass based on the given `dep_file_path`.
 
         :param dep_file_path: The path to the dependency file.
-        :type dep_file_path: str
         :return: Instance of subclass of `PupDependencies`.
-        :rtype: PupDependencies
         """
         file_extension = dep_file_path.split('.')[-1]
 
         return _dependency_types_to_classes()[file_extension](dep_file_path)
 
     def __init__(self, dep_file_path, config=None):
+        # type: (str, Config) -> None
         self._dep_file_path = dep_file_path
 
         self._config = config or Config.get_config_singleton()
 
     def install(self):
+        # type: () -> None
         """Install the pup dependency."""
         raise NotImplementedError
 
@@ -272,6 +287,7 @@ class PythonDependencies(PupDependencies):
     run.
     """
     def install(self):
+        # type: () -> None
         pip_cmd = [
             'pip',
             'install',
@@ -287,6 +303,7 @@ class AnsibleDependencies(PupDependencies):
     to run.
     """
     def install(self):
+        # type: () -> None
         ansible_galaxy_cmd = [
             'ansible-galaxy',
             'install',

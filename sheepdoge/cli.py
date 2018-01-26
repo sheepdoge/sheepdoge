@@ -1,6 +1,7 @@
 """The point of entry for the sheepdoge pip package console script"""
 
 import io
+from typing import Dict # pylint: disable=unused-import
 
 import click
 
@@ -14,6 +15,7 @@ from sheepdoge.__version__ import __version__
 
 
 def _initialize_config(config_file, config_options=None):
+    # type: (str, Dict[str, str]) -> None
     config_options = config_options or {}
 
     with io.open(config_file, 'r',
@@ -29,6 +31,7 @@ def _initialize_config(config_file, config_options=None):
 @click.group()
 @click.version_option(prog_name='sheepdoge', version=__version__)
 def cli():
+    # type: () -> None
     pass
 
 
@@ -36,12 +39,10 @@ def cli():
 @click.option('--config-file', default='kennel.cfg')
 @click.option('--parallel/--no-parallel', default=True)
 def install(config_file, parallel):
+    # type: (str, bool) -> None
     _initialize_config(config_file)
 
-    install_cls = InstallAction
-
-    if parallel:
-        install_cls = ParallelInstallAction
+    install_cls = ParallelInstallAction if parallel else InstallAction
 
     install_action = install_cls(Kennel, Pup)
     Sheepdoge(install_action).run()
@@ -51,6 +52,7 @@ def install(config_file, parallel):
 @click.option('--ansible-args', type=str)
 @click.option('--config-file', default='kennel.cfg')
 def run(ansible_args, config_file):
+    # type: (str, str) -> None
     _initialize_config(config_file)
 
     kennel = Kennel(additional_ansible_args=ansible_args)
@@ -59,4 +61,5 @@ def run(ansible_args, config_file):
 
 
 def main():
+    # type: () -> None
     cli()
