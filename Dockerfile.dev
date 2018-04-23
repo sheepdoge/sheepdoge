@@ -1,0 +1,7 @@
+FROM python:3.6-stretch
+ADD dev-requirements.txt dev-requirements.txt
+ADD requirements.txt requirements.txt
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r dev-requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /src

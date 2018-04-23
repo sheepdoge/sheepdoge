@@ -1,0 +1,16 @@
+load("@sheepdoge_dev//:requirements.bzl", "all_requirements")
+
+filegroup(
+  name = "sheepdoge_unit_tests_fg",
+  srcs = glob(["*.py"])
+)
+
+[py_test(
+  name = test_file[:-len(".py")],
+  srcs = [
+    "//tests/unit:sheepdoge_unit_tests_fg"
+  ],
+  deps = [
+    "//sheepdoge:py_default_lib"
+  ] + all_requirements
+) for test_file in glob(["test_*.py"])]

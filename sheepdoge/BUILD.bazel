@@ -1,0 +1,17 @@
+load("@sheepdoge//:requirements.bzl", "all_requirements", "requirement")
+
+filegroup(
+  name = "sheepdoge_lib_fg",
+  srcs = glob(["*.py"])
+)
+
+py_library(
+  name = "py_default_lib",
+  srcs = [
+    "//sheepdoge:sheepdoge_lib_fg",
+  ],
+  deps = [
+    "//sheepdoge/action:py_default_lib"
+  ] + all_requirements,
+  visibility = ["//visibility:public"]
+)

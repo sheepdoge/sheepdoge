@@ -1,0 +1,10 @@
+load("@subpar//:subpar.bzl", "par_binary")
+
+par_binary(
+  name = "sheepdoge",
+  main = "main.py",
+  srcs = ["main.py"],
+  deps = [
+    "//sheepdoge:py_default_lib"
+  ]
+)
