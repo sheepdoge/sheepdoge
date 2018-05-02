@@ -98,3 +98,6 @@ class KennelTestCase(unittest.TestCase):
 
         self.assertFalse('--vault-password-file' in ansible_playbook_cmd)
         self.assertEqual(' -K', ansible_playbook_cmd[-3:])
+
+if __name__ == '__main__':
+    unittest.main()

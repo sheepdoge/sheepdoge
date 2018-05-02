@@ -12,6 +12,9 @@ with open('sheepdoge/__version__.py', 'rb') as version_file:
     version_re = re.compile(r'__version__\s+=\s+(.*)')
     version = str(ast.literal_eval(version_re.search(file_contents).group(1)))
 
+with open('requirements.in', 'r') as requirements_file:
+    install_requires = [package.strip() for package in requirements_file.readlines()]
+
 setup(
     name='sheepdoge',
     version=version,
@@ -34,15 +37,7 @@ setup(
     ],
     keywords=['provisioning', 'automation'],
     packages=find_packages(where='.', exclude=['tests*']),
-    install_requires=[
-        'ansible>=2.0,<3.0',
-        'configparser>=3.0',
-        'click>=6.0,<7.0',
-        'PyYaml>=3.0,<4.0',
-        'six>=1.0,<2.0',
-        'futures>=3.0,<4.0; python_version == "2.7"',
-        'typing>=3.0,<4.0; python_version == "2.7"'
-    ],
+    install_requires=install_requires,
     entry_points={
         'console_scripts': ['sheepdoge = sheepdoge.cli:main']
     }

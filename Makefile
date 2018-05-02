@@ -1,25 +1,43 @@
-install:
-	pipenv install --dev
+dev_requirements_prefix := dev-requirements
+requirements_prefix := requirements
 
-install2:
-	pipenv install --two --dev
+$(requirements_prefix).txt: $(requirements_prefix).in
+	pip-compile --output-file $(requirements_prefix).txt $(requirements_prefix).in
 
-clean:
-	pipenv --rm
-	rm Pipfile.lock || true
+$(dev_requirements_prefix).txt: $(dev_requirements_prefix).in
+	pip-compile --output-file $(dev_requirements_prefix).txt $(dev_requirements_prefix).in
 
-typecheck:
-	pipenv run bash -c "which mypy >/dev/null && mypy ./sheepdoge"
+static_dockerfile := Dockerfile.dev
+static_image_name := mattjmcnaughton/sheepdoge-dev:latest
 
-lint: typecheck
-	pipenv run pylint ./sheepdoge
-	pipenv check
+build_static_image: $(requirements_prefix).txt $(dev_requirements_prefix).txt $(static_dockerfile)
+	docker build -t $(static_image_name) -f $(static_dockerfile) .
 
-unit_tests:
-	pipenv run nose2 -s tests/unit
+lint: build_static_image
+	docker run -t --rm -v $$(pwd):/src $(static_image_name) sh -c "pylint ./sheepdoge"
 
-integration_tests:
+typecheck: build_static_image
+	docker run -t --rm -v $$(pwd):/src $(static_image_name) sh -c "mypy ./sheepdoge"
+
+static: lint typecheck
+
+unit_test: $(requirements_prefix).txt $(dev_requirements_prefix).txt
+	bazel test //tests/unit/...
+
+integration_test:
 	./tests/integration/run_integration_tests.sh
 
-interactive_integration_tests:
-	./tests/integration/run_integration_tests.sh --interactive
+tests: unit_test integration_test
+
+check: static tests
+
+build: $(requirements_prefix).txt $(dev_requirements_prefix).txt
+	bazel build //:sheepdoge.par
+
+run: build
+	bazel run //:sheepdoge
+
+clean:
+	rm $(requirements_prefix).txt || true
+	rm $(dev_requirements_prefix).txt || true
+	bazel clean

@@ -74,3 +74,6 @@ class ConfigTestCase(unittest.TestCase):
 
         for key in {'abs_pupfile_dir', 'abs_kennel_roles_dir'}:
             self.assertIn('/', config.get(key))
+
+if __name__ == '__main__':
+    unittest.main()

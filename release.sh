@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-# Push a release of sheepdog to `pypi`.
+# Push a release of sheepdog to `pypi` and generate the build artifact using
+# bazel.
 #
 # Important, while this script currently takes the version number as an
 # argument, it does not automatically update the `setup.py` file. The releaser
@@ -22,20 +23,25 @@ release::check_version_number_updated_in_setup() {
 }
 
 release::build_sdist() {
-    pipenv run python setup.py sdist
+    python setup.py sdist
 }
 
 release::build_bdist_wheel() {
-    pipenv run python setup.py bdist_wheel
+    python setup.py bdist_wheel
 }
 
 release::upload_with_twine() {
-    pipenv run twine upload dist/*
+    twine upload dist/*
 }
 
 release::push_git_tag() {
     git tag "$VERSION_NUMBER"
     git push origin --tags
+}
+
+release::build_binary() {
+    make build
+    echo 'Upload `bazel-bin/sheepdoge.par` to the release on github'
 }
 
 release::run() {
@@ -44,6 +50,7 @@ release::run() {
     release::build_bdist_wheel
     release::upload_with_twine
     release::push_git_tag
+    release::build_binary
 }
 
 release::cleanup() {

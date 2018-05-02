@@ -1,11 +1,11 @@
-from unittest import TestCase
+import unittest
 from mock import MagicMock
 
 from sheepdoge.config import Config
 from sheepdoge.action.install import InstallAction, ParallelInstallAction
 
 
-class InstallActionTestCase(TestCase):
+class InstallActionTestCase(unittest.TestCase):
     def setUp(self, *args, **kwargs):
         super(InstallActionTestCase, self).setUp(*args, **kwargs)
 
@@ -36,3 +36,6 @@ class InstallActionTestCase(TestCase):
         mock_kennel_cls.refresh_roles.assert_called_once()
         for mock_pup in individual_pup_mocks:
             mock_pup.install.assert_called_once()
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,0 +1,8 @@
+load("@sheepdoge//:requirements.bzl", "all_requirements")
+
+py_library(
+  name = "py_default_lib",
+  srcs = glob(["*.py"]),
+  deps = all_requirements,
+  visibility = ["//visibility:public"]
+)

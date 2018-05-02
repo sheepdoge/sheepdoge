@@ -55,11 +55,21 @@ personal workstations. It provides the following benefits:
 
 ## Installation
 
-*sheepdoge* depends on `git`, `python`, and `pip`. Install *sheepdoge* by running:
+*sheepdoge* depends on `git`, `python`, and `ansible`. You can install it either by
+running:
 
 ```
 pip install sheepdoge
 ```
+
+or by downloading the `.par` file from the latest release. Note, that
+*sheepdoge* presumes you've installed `ansible` correctly. You can do so with
+`pip install ansible`, or using your operating system specific install mechanism
+(i.e. `apt install ansible`).
+
+Note, `sheepdoge` is only tested on python3. It may work on python2, but we do
+not test for this. If python2 support is important to you, I'm happy to work
+together on a PR :)
 
 ## Writing your first kennel
 

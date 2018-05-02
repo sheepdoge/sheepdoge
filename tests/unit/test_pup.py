@@ -222,3 +222,6 @@ class AnsibleDependenciesTestCase(unittest.TestCase):
 
         for cmd_line in expected_cmds:
             self.assertIn(cmd_line, ansible_galaxy_cmd)
+
+if __name__ == '__main__':
+    unittest.main()

@@ -12,19 +12,23 @@ TMP_SCRATCH="$SD/tmp_scratch"
 mkdir $TMP_SCRATCH
 
 teardown() {
-    rm -r $TMP_SCRATCH
+    rm -rf $TMP_SCRATCH
 }
 
 trap 'teardown' EXIT
+
+pushd $(pwd)
+cd "$SD/../../../../"
+make build
+popd
+
+cp "$SD/../../../../bazel-bin/sheepdoge.par" "$TMP_SCRATCH/"
 
 mkdir "$TMP_SCRATCH/kennels"
 cp -r "$SD/../../kennels/kennel-external-pups" "$TMP_SCRATCH/kennels/kennel-external-pups"
 
 mkdir "$TMP_SCRATCH/pups"
 cp -r "$SD/../../pups/pup-base" "$TMP_SCRATCH/pups/pup-base"
-cp "$SD/../../../../sheepdoge_runner.py" "$TMP_SCRATCH/"
-cp "$SD/../../../../setup.py" "$TMP_SCRATCH/"
-cp -r "$SD/../../../../sheepdoge" "$TMP_SCRATCH/sheepdoge"
 
 docker build -t $IMAGE_NAME .
 
