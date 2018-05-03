@@ -89,17 +89,11 @@ request](https://github.com/sheepdoge/sheepdoge/pulls). It doesn't have to
 be a huge feature - documentation fixes/improvements, added test coverage, and
 small refactorings for cleaner code are all great places to start :)
 
-*sheepdoge* integration tests depend on Docker. Additionally, if developing on
-*sheepdoge*, you'll need to install the development dependencies using [pipenv]
-(https://github.com/kennethreitz/pipenv) by running:
+The `Makefile` defines common commands which are helpful during development.
+Please ensure you have `docker`, `bazel`, and `pip-tools` installed in your
+development environment.
 
-```
-make install
-```
-
-Note, that if you are adding a production dependency to `sheepdoge`, please be
-sure to add it both to the `install_requires` section of `setup.py` and
-`Pipfile`.
+Please ensure `make check` passes before creating a pr.
 
 ## Support
 

@@ -17,3 +17,4 @@ tmp_scratch
 .mypy_cache
 
 bazel-*
+*requirements.txt
