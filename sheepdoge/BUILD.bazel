@@ -1,4 +1,4 @@
-load("@sheepdoge//:requirements.bzl", "all_requirements", "requirement")
+load("@sheepdoge//:requirements.bzl", "all_requirements")
 
 filegroup(
   name = "sheepdoge_lib_fg",
