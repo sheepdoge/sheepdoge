@@ -41,7 +41,10 @@ release::push_git_tag() {
 
 release::build_binary() {
     make build
-    echo 'Upload `bazel-bin/sheepdoge.par` to the release on github'
+    echo '===== Upload `bazel-bin/sheepdoge.par` to the release on github ======'
+
+    make sha256
+    echo '===== Upload `sheepdoge.par.sha256` to the release on github ======'
 }
 
 release::run() {

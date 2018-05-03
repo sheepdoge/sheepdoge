@@ -34,10 +34,14 @@ check: static tests
 build: $(requirements_prefix).txt $(dev_requirements_prefix).txt
 	bazel build //:sheepdoge.par
 
+sha256: build
+	sha256sum bazel-bin/sheepdoge.par > sheepdoge.par.sha256
+
 run: build
 	bazel run //:sheepdoge
 
 clean:
 	rm $(requirements_prefix).txt || true
 	rm $(dev_requirements_prefix).txt || true
+	rm sheepdoge.par.sha256 || true
 	bazel clean

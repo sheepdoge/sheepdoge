@@ -18,3 +18,5 @@ tmp_scratch
 
 bazel-*
 *requirements.txt
+
+sheepdoge.par.sha256
