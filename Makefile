@@ -13,13 +13,19 @@ static_image_name := mattjmcnaughton/sheepdoge-dev:latest
 build_static_image: $(requirements_prefix).txt $(dev_requirements_prefix).txt $(static_dockerfile)
 	docker build -t $(static_image_name) -f $(static_dockerfile) .
 
+fmt: build_static_image
+	docker run -t --rm -v $$(pwd):/src $(static_image_name) sh -c "black ./sheepdoge"
+
+fmt_check: build_static_image
+	docker run -t --rm -v $$(pwd):/src $(static_image_name) sh -c "black --check ./sheepdoge"
+
 lint: build_static_image
 	docker run -t --rm -v $$(pwd):/src $(static_image_name) sh -c "pylint ./sheepdoge"
 
 typecheck: build_static_image
 	docker run -t --rm -v $$(pwd):/src $(static_image_name) sh -c "mypy ./sheepdoge"
 
-static: lint typecheck
+static: lint typecheck fmt_check
 
 unit_test: $(requirements_prefix).txt $(dev_requirements_prefix).txt
 	bazel test //tests/unit/...
@@ -29,7 +35,7 @@ integration_test:
 
 tests: unit_test integration_test
 
-check: static tests
+check: static unit_test
 
 build: $(requirements_prefix).txt $(dev_requirements_prefix).txt
 	bazel build //:sheepdoge.par

@@ -1,6 +1,6 @@
 import os
 import subprocess
-from typing import Dict, List # pylint: disable=unused-import
+from typing import Dict, List  # pylint: disable=unused-import
 
 from sheepdoge.exception import SheepdogeShellRunnerException
 
@@ -12,9 +12,10 @@ class ShellRunner(object):
     :param cmd_as_list: The command for the `ShellRunner` to execute.
     :raises: SheepdogeShellRunnerException
     """
+
     def __init__(self, cmd_as_list):
         # type: (List[str]) -> None
-        self._cmd_as_str = ' '.join(cmd_as_list)
+        self._cmd_as_str = " ".join(cmd_as_list)
 
     def run(self, env_additions=None):
         # type: (Dict[str, str]) -> None
@@ -30,12 +31,8 @@ class ShellRunner(object):
         shell_env.update(env_additions)
 
         try:
-            subprocess.check_call(
-                self._cmd_as_str,
-                shell=True,
-                env=shell_env
-            )
+            subprocess.check_call(self._cmd_as_str, shell=True, env=shell_env)
         except subprocess.CalledProcessError as err:
             raise SheepdogeShellRunnerException(
-                '{} failed: {}'.format(self._cmd_as_str, str(err))
+                "{} failed: {}".format(self._cmd_as_str, str(err))
             )

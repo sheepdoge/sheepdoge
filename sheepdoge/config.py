@@ -1,18 +1,19 @@
 from configparser import ConfigParser, NoOptionError
-from typing import Dict # pylint: disable=unused-import
+from typing import Dict  # pylint: disable=unused-import
 import os
 
 from sheepdoge.exception import (
     SheepdogeConfigurationAlreadyInitializedException,
-    SheepdogeConfigurationNotInitializedException)
+    SheepdogeConfigurationNotInitializedException,
+)
 
 
 DEFAULTS = {
-    'kennel_playbook_path': 'kennel.yml',
-    'kennel_roles_path': '.kennel_roles',
-    'pupfile_path': 'pupfile.yml',
-    'vault_password_file': None
-} # type: Dict[str, str]
+    "kennel_playbook_path": "kennel.yml",
+    "kennel_roles_path": ".kennel_roles",
+    "pupfile_path": "pupfile.yml",
+    "vault_password_file": None,
+}  # type: Dict[str, str]
 
 
 class Config(object):
@@ -20,8 +21,8 @@ class Config(object):
     Additionally, we can only set the config values during initialization.
     Multiple different classes can access this single instance at a time.
     """
-    _config = None # type: Config
 
+    _config = None  # type: Config
 
     def __init__(self, config_dict):
         # type: (Dict[str, str]) -> None
@@ -49,8 +50,9 @@ class Config(object):
         return cls._config
 
     @classmethod
-    def initialize_config_singleton(cls, config_file_contents=None,
-                                    config_options=None):
+    def initialize_config_singleton(
+        cls, config_file_contents=None, config_options=None
+    ):
         # type: (str, Dict[str, str]) -> None
         """Initialize the config singleton with the proper values. If we
         specify no additional values during configuration, then the config
@@ -70,7 +72,7 @@ class Config(object):
         if cls._config is not None:
             raise SheepdogeConfigurationAlreadyInitializedException()
 
-        config_dict = {} # type: Dict[str, str]
+        config_dict = {}  # type: Dict[str, str]
 
         cls._set_config_default_values(config_dict)
 
@@ -98,12 +100,13 @@ class Config(object):
         config_parser = ConfigParser()
         config_parser.read_string(config_file_contents)
 
-        kennel_cfg_section = 'kennel'
+        kennel_cfg_section = "kennel"
 
         for currently_defined_key in config_dict.keys():
             try:
-                config_file_value = config_parser.get(kennel_cfg_section,
-                                                      currently_defined_key)
+                config_file_value = config_parser.get(
+                    kennel_cfg_section, currently_defined_key
+                )
 
                 config_dict[currently_defined_key] = config_file_value
             except NoOptionError:
@@ -117,15 +120,15 @@ class Config(object):
     @classmethod
     def _set_calculated_config_values(cls, config_dict):
         # type: (Dict[str, str]) -> None
-        pupfile_path = config_dict['pupfile_path']
+        pupfile_path = config_dict["pupfile_path"]
         pupfile_dir = os.path.dirname(os.path.realpath(pupfile_path))
 
-        kennel_roles_path = config_dict['kennel_roles_path']
+        kennel_roles_path = config_dict["kennel_roles_path"]
         abs_kennel_roles_dir = os.path.realpath(kennel_roles_path)
 
         calculated_config = {
-            'abs_pupfile_dir': pupfile_dir,
-            'abs_kennel_roles_dir': abs_kennel_roles_dir
+            "abs_pupfile_dir": pupfile_dir,
+            "abs_kennel_roles_dir": abs_kennel_roles_dir,
         }
 
         config_dict.update(calculated_config)

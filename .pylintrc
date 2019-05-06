@@ -1,3 +1,4 @@
 [MESSAGES CONTROL]
-# disable (too-few-public-methods, missing-docstring, unused-import)
-disable=R0903,C0111,W0611
+# disable (too-few-public-methods, missing-docstring,
+# unused-import,wrong-hanging-indentation)
+disable=R0903,C0111,W0611,C0330

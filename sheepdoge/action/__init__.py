@@ -8,6 +8,7 @@ class Action(object):
 
     :param config: The configuration object for performing this action.
     """
+
     def __init__(self, config=None):
         # type: (Config) -> None
         self._config = config or Config.get_config_singleton()

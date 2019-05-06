@@ -1,13 +1,13 @@
 import os
 import shutil
-from typing import List # pylint: disable=unused-import
+from typing import List  # pylint: disable=unused-import
 
 from sheepdoge.config import Config
 from sheepdoge.utils import ShellRunner
 
 
 class Kennel(object):
-    def __init__(self, additional_ansible_args='', config=None):
+    def __init__(self, additional_ansible_args="", config=None):
         # type: (str, Config) -> None
         self._additional_ansible_args = additional_ansible_args
         self._config = config or Config.get_config_singleton()
@@ -23,26 +23,24 @@ class Kennel(object):
     def run(self):
         # type: () -> None
         ansible_playbook_cmd = [
-            'ansible-playbook',
-            self._config.get('kennel_playbook_path')
+            "ansible-playbook",
+            self._config.get("kennel_playbook_path"),
         ]
 
-        self._append_vault_password_file_flag_if_file_exists(
-            ansible_playbook_cmd)
+        self._append_vault_password_file_flag_if_file_exists(ansible_playbook_cmd)
 
         if self._additional_ansible_args:
-            ansible_playbook_cmd += self._additional_ansible_args.split(' ')
+            ansible_playbook_cmd += self._additional_ansible_args.split(" ")
 
-        ShellRunner(ansible_playbook_cmd).run(env_additions={
-            'ANSIBLE_ROLES_PATH': self._config.get('kennel_roles_path')
-        })
+        ShellRunner(ansible_playbook_cmd).run(
+            env_additions={"ANSIBLE_ROLES_PATH": self._config.get("kennel_roles_path")}
+        )
 
-    def _append_vault_password_file_flag_if_file_exists(self,
-                                                        ansible_playbook_cmd):
+    def _append_vault_password_file_flag_if_file_exists(self, ansible_playbook_cmd):
         # type: (List[str]) -> None
-        password_file = self._config.get('vault_password_file')
+        password_file = self._config.get("vault_password_file")
 
         if password_file:
             ansible_playbook_cmd.append(
-                '--vault-password-file={}'.format(password_file)
+                "--vault-password-file={}".format(password_file)
             )

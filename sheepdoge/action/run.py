@@ -1,9 +1,10 @@
 """Module for actions related to running a kennel."""
 
-from typing import Any # pylint: disable=unused-import
+from typing import Any  # pylint: disable=unused-import
 
 from sheepdoge.action import Action
-from sheepdoge.kennel import Kennel # pylint: disable=unused-import
+from sheepdoge.kennel import Kennel  # pylint: disable=unused-import
+
 
 class RunAction(Action):
     def __init__(self, kennel, *args, **kwargs):
