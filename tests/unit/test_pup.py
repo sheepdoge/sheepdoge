@@ -7,9 +7,16 @@ import unittest
 from six import iteritems
 
 from sheepdoge.config import Config
-from sheepdoge.pup import (AnsibleDependencies, FsPup, GalaxyPup, GitPup,
-                          Pup, PupDependencies, PupfileEntry,
-                          PythonDependencies)
+from sheepdoge.pup import (
+    AnsibleDependencies,
+    FsPup,
+    GalaxyPup,
+    GitPup,
+    Pup,
+    PupDependencies,
+    PupfileEntry,
+    PythonDependencies,
+)
 
 
 class PupTestCase(unittest.TestCase):
@@ -31,42 +38,52 @@ class PupTestCase(unittest.TestCase):
         """
 
         expected_entries = [
-            PupfileEntry(name='sheepdoge.pup-base', path='../../pups/pup-base',
-                         pup_type='fs'),
-            PupfileEntry(name='sheepdoge.pup-base',
-                         path='https://github.com/mattjmcnaughton/pup-base.git',
-                         pup_type='git'),
-            PupfileEntry(name='sheepdoge.pup-base',
-                         path='sheepdoge.pup-base',
-                         pup_type='galaxy')
+            PupfileEntry(
+                name="sheepdoge.pup-base", path="../../pups/pup-base", pup_type="fs"
+            ),
+            PupfileEntry(
+                name="sheepdoge.pup-base",
+                path="https://github.com/mattjmcnaughton/pup-base.git",
+                pup_type="git",
+            ),
+            PupfileEntry(
+                name="sheepdoge.pup-base", path="sheepdoge.pup-base", pup_type="galaxy"
+            ),
         ]
 
-        self.assertEqual(Pup.parse_text_into_entries(pupfile_contents),
-                         expected_entries)
+        self.assertEqual(
+            Pup.parse_text_into_entries(pupfile_contents), expected_entries
+        )
 
     def test_create_from_entries(self):
         """Test we transform the `PupfileEntry` instances into popular instances
         of `Pup` subclasses.
         """
         pupfile_entries = [
-            PupfileEntry(name='sheepdoge.pup-base', path='../../pups/pup-base',
-                         pup_type='fs'),
-            PupfileEntry(name='sheepdoge.pup-base',
-                         path='https://github.com/mattjmcnaughton/pup-base.git',
-                         pup_type='git'),
-            PupfileEntry(name='sheepdoge.pup-base',
-                         path='sheepdoge.pup-base',
-                         pup_type='galaxy')
+            PupfileEntry(
+                name="sheepdoge.pup-base", path="../../pups/pup-base", pup_type="fs"
+            ),
+            PupfileEntry(
+                name="sheepdoge.pup-base",
+                path="https://github.com/mattjmcnaughton/pup-base.git",
+                pup_type="git",
+            ),
+            PupfileEntry(
+                name="sheepdoge.pup-base", path="sheepdoge.pup-base", pup_type="galaxy"
+            ),
         ]
 
         expected_pups = [
-            FsPup('sheepdoge.pup-base', '../../pups/pup-base'),
-            GitPup('sheepdoge.pup-base',
-                   'https://github.com/mattjmcnaughton/pup-base.git'),
-            GalaxyPup('sheepdoge.pup-base', 'sheepdoge.pup-base')
+            FsPup("sheepdoge.pup-base", "../../pups/pup-base"),
+            GitPup(
+                "sheepdoge.pup-base", "https://github.com/mattjmcnaughton/pup-base.git"
+            ),
+            GalaxyPup("sheepdoge.pup-base", "sheepdoge.pup-base"),
         ]
 
-        actual_pup_dicts = [pup.to_dict() for pup in Pup.create_from_entries(pupfile_entries)]
+        actual_pup_dicts = [
+            pup.to_dict() for pup in Pup.create_from_entries(pupfile_entries)
+        ]
         expected_pup_dicts = [pup.to_dict() for pup in expected_pups]
 
         self.assertEqual(actual_pup_dicts, expected_pup_dicts)
@@ -83,20 +100,19 @@ class BasePupTestCase(unittest.TestCase):
         self._pupfile_dir = pupfile_dir
 
         mock_config_options = {
-            'kennel_roles_path': self._kennel_roles_dir,
-            'pupfile_path': os.path.join(self._pupfile_dir, 'pupfile.yml')
+            "kennel_roles_path": self._kennel_roles_dir,
+            "pupfile_path": os.path.join(self._pupfile_dir, "pupfile.yml"),
         }
 
         Config.clear_config_singleton()
-        Config.initialize_config_singleton(
-            config_options=mock_config_options)
+        Config.initialize_config_singleton(config_options=mock_config_options)
 
     @staticmethod
     def _create_test_fs():
         dir_root = tempfile.mkdtemp()
         pupfile_dir = dir_root
 
-        kennel_roles_dir = os.path.join(dir_root, '.kennels')
+        kennel_roles_dir = os.path.join(dir_root, ".kennels")
         os.mkdir(kennel_roles_dir)
 
         return dir_root, kennel_roles_dir, pupfile_dir
@@ -116,35 +132,35 @@ class BasePupTestCase(unittest.TestCase):
 
 class FsPupTestCase(BasePupTestCase):
     def test_install_pup_no_dependencies(self):
-        no_dep_pup = self._create_fs_pup('sheepdoge.no-dependencies-pup')
+        no_dep_pup = self._create_fs_pup("sheepdoge.no-dependencies-pup")
         no_dep_pup.install()
 
         self._assert_pup_installed(no_dep_pup)
 
     def _create_fs_pup(self, name):
-        pups_dir = os.path.join(self._dir_root, 'pups')
+        pups_dir = os.path.join(self._dir_root, "pups")
         os.mkdir(pups_dir)
 
-        name_suffix = name.split('.')[1]
+        name_suffix = name.split(".")[1]
         pup_dir = os.path.join(pups_dir, name_suffix)
         os.mkdir(pup_dir)
 
-        scratch_file_in_pup_dir = os.path.join(pup_dir, 'README.md')
-        with open(scratch_file_in_pup_dir, 'w') as scratch_file:
-            scratch_file.write('test')
+        scratch_file_in_pup_dir = os.path.join(pup_dir, "README.md")
+        with open(scratch_file_in_pup_dir, "w") as scratch_file:
+            scratch_file.write("test")
 
-        relative_pup_path = os.path.join('.', 'pups', name_suffix)
+        relative_pup_path = os.path.join(".", "pups", name_suffix)
         return FsPup(name, relative_pup_path)
 
 
 class GitPupTestCase(BasePupTestCase):
-    @unittest.skip('Tested in integration test.')
+    @unittest.skip("Tested in integration test.")
     def test_install_git_pup(self):
         pass
 
 
 class GalaxyPupTestCase(BasePupTestCase):
-    @unittest.skip('Tested in integration tests.')
+    @unittest.skip("Tested in integration tests.")
     def test_install_galaxy_pup(self):
         pass
 
@@ -158,14 +174,13 @@ class PupDependenciesTestCase(unittest.TestCase):
 
     def test_create_from_dep_file_path(self):
         filename_to_expected_type = {
-            'requirements.txt': PythonDependencies,
-            'requirements.yml': AnsibleDependencies
+            "requirements.txt": PythonDependencies,
+            "requirements.yml": AnsibleDependencies,
         }
 
         for filename, expected_type in iteritems(filename_to_expected_type):
             self.assertIsInstance(
-                PupDependencies.create_from_dep_file_path(filename),
-                expected_type
+                PupDependencies.create_from_dep_file_path(filename), expected_type
             )
 
 
@@ -176,9 +191,9 @@ class PythonDependenciesTestCase(unittest.TestCase):
         Config.clear_config_singleton()
         Config.initialize_config_singleton()
 
-    @mock.patch('subprocess.check_call')
+    @mock.patch("subprocess.check_call")
     def test_install(self, mock_check_call):
-        python_dep_file_path = '/tmp/requirements.txt'
+        python_dep_file_path = "/tmp/requirements.txt"
 
         deps = PupDependencies.create_from_dep_file_path(python_dep_file_path)
         deps.install()
@@ -188,7 +203,7 @@ class PythonDependenciesTestCase(unittest.TestCase):
         check_call_args, check_call_kwargs = mock_check_call.call_args
         pip_cmd = check_call_args[0]
 
-        for cmd_line in {'pip', '-r {}'.format(python_dep_file_path)}:
+        for cmd_line in {"pip", "-r {}".format(python_dep_file_path)}:
             self.assertIn(cmd_line, pip_cmd)
 
 
@@ -199,9 +214,9 @@ class AnsibleDependenciesTestCase(unittest.TestCase):
         Config.clear_config_singleton()
         Config.initialize_config_singleton()
 
-    @mock.patch('subprocess.check_call')
+    @mock.patch("subprocess.check_call")
     def test_install(self, mock_check_call):
-        ansible_dep_file_path = '/tmp/requirements.yml'
+        ansible_dep_file_path = "/tmp/requirements.yml"
 
         deps = PupDependencies.create_from_dep_file_path(ansible_dep_file_path)
         deps.install()
@@ -214,14 +229,15 @@ class AnsibleDependenciesTestCase(unittest.TestCase):
         config = Config.get_config_singleton()
 
         expected_cmds = {
-            'ansible-galaxy',
-            'install',
-            '-r {}'.format(ansible_dep_file_path),
-            '-p {}'.format(config.get('abs_kennel_roles_dir'))
+            "ansible-galaxy",
+            "install",
+            "-r {}".format(ansible_dep_file_path),
+            "-p {}".format(config.get("abs_kennel_roles_dir")),
         }
 
         for cmd_line in expected_cmds:
             self.assertIn(cmd_line, ansible_galaxy_cmd)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

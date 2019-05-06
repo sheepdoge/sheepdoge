@@ -3,7 +3,10 @@ from contextlib import contextmanager
 import os
 import shutil
 import tempfile
-from typing import Any, Dict, Iterable, Iterator, List, Tuple, Type # pylint: disable=unused-import
+
+# pylint: disable=unused-import
+
+from typing import Any, Dict, Iterable, Iterator, List, Tuple, Type
 
 import yaml
 
@@ -13,26 +16,19 @@ from sheepdoge.utils import ShellRunner
 
 # The character used in the `location` in the pupfile to split between
 # `pup_type` and `path`.
-LOCATION_SPLIT_CHAR = '+'
+LOCATION_SPLIT_CHAR = "+"
 
-PupfileEntry = namedtuple('PupfileEntry', 'name path pup_type')
+PupfileEntry = namedtuple("PupfileEntry", "name path pup_type")
 
 
 def _pup_types_to_classes():
     # type: () -> Dict[str, Type[Pup]]
-    return {
-        'fs': FsPup,
-        'galaxy': GalaxyPup,
-        'git': GitPup
-    }
+    return {"fs": FsPup, "galaxy": GalaxyPup, "git": GitPup}
 
 
 def _dependency_types_to_classes():
     # type: () -> Dict[str, Type[PupDependencies]]
-    return {
-        'txt': PythonDependencies,
-        'yml': AnsibleDependencies
-    }
+    return {"txt": PythonDependencies, "yml": AnsibleDependencies}
 
 
 class Pup(object):
@@ -40,15 +36,14 @@ class Pup(object):
     as base methods inherited by the different types of pups.
     """
 
-    PYTHON_DEP_FILE = 'requirements.txt'
-    ANSIBLE_DEP_FILE = 'requirements.yml'
-
+    PYTHON_DEP_FILE = "requirements.txt"
+    ANSIBLE_DEP_FILE = "requirements.yml"
 
     def __init__(self, name, path, config=None):
         # type: (str, str, Config) -> None
         self._name = name
         self._path = path
-        self._pup_dependencies = [] # type: List[PupDependencies]
+        self._pup_dependencies = []  # type: List[PupDependencies]
 
         self._config = config or Config.get_config_singleton()
 
@@ -57,7 +52,7 @@ class Pup(object):
         # type: (str) -> List[Pup]
         """Return a list of `Pup` objects for each pup we wish to install."""
         # Read in file and parse with yml
-        with open(pupfile_path, 'r') as pupfile:
+        with open(pupfile_path, "r") as pupfile:
             entries_from_file = cls.parse_text_into_entries(pupfile.read())
 
         return cls.create_from_entries(entries_from_file)
@@ -74,11 +69,11 @@ class Pup(object):
         entries = []
 
         for dict_entry in yaml.load(file_contents):
-            name = dict_entry['name']
-            pup_type, path = cls._parse_location(dict_entry['location'])
+            name = dict_entry["name"]
+            pup_type, path = cls._parse_location(dict_entry["location"])
 
             if pup_type not in _pup_types_to_classes().keys():
-                err_msg = '{} is not a valid pup type.'.format(pup_type)
+                err_msg = "{} is not a valid pup type.".format(pup_type)
                 raise SheepdogeInvalidPupTypeException(err_msg)
             entries.append(PupfileEntry(name=name, path=path, pup_type=pup_type))
 
@@ -116,11 +111,7 @@ class Pup(object):
         """Return a readable version of the pup"""
         # @TODO(mattjmcnaughton) Determine the best long term solution. Is it
         # defining `__repr__` or maybe `__eq__`?
-        return {
-            'name': self._name,
-            'pup_type': self.__class__,
-            'path': self._path
-        }
+        return {"name": self._name, "pup_type": self.__class__, "path": self._path}
 
     def install(self):
         # type: () -> None
@@ -180,13 +171,14 @@ class FsPup(Pup):
     All fs pupfile locations should be specified relative to the location of the
     pupfile.
     """
+
     def _install_pup(self):
         # type: () -> str
-        fs_pup_location = os.path.join(self._config.get('abs_pupfile_dir'),
-                                       self._path)
+        fs_pup_location = os.path.join(self._config.get("abs_pupfile_dir"), self._path)
 
         pup_in_kennel_path = os.path.join(
-            self._config.get('abs_kennel_roles_dir'), self._name)
+            self._config.get("abs_kennel_roles_dir"), self._name
+        )
 
         shutil.copytree(fs_pup_location, pup_in_kennel_path)
 
@@ -196,23 +188,18 @@ class FsPup(Pup):
 class GitPup(Pup):
     """A pup for which the source lives in a remote git repo.
     """
+
     def _install_pup(self):
         # type: () -> str
         with self._with_tmp_dir() as install_dir:
             install_path = os.path.join(install_dir, self._name)
 
-            git_cmd = [
-                'git',
-                'clone',
-                self._path,
-                install_path
-            ]
+            git_cmd = ["git", "clone", self._path, install_path]
 
             ShellRunner(git_cmd).run()
 
             pup_in_kennel_path = os.path.join(
-                self._config.get('abs_kennel_roles_dir'),
-                self._name
+                self._config.get("abs_kennel_roles_dir"), self._name
             )
 
             shutil.copytree(install_path, pup_in_kennel_path)
@@ -223,29 +210,26 @@ class GitPup(Pup):
 class GalaxyPup(Pup):
     """A pup for which the source lives on ansible-galaxy.
     """
+
     def _install_pup(self):
         # type: () -> str
         with self._with_tmp_dir() as install_dir:
             ansible_galaxy_cmd = [
-                'ansible-galaxy',
-                'install',
+                "ansible-galaxy",
+                "install",
                 self._path,
-                '-p',
-                install_dir
+                "-p",
+                install_dir,
             ]
 
             ShellRunner(ansible_galaxy_cmd).run()
 
             role_name = os.listdir(install_dir)[0]
 
-            install_path = os.path.join(
-                install_dir,
-                role_name
-            )
+            install_path = os.path.join(install_dir, role_name)
 
             pup_in_kennel_path = os.path.join(
-                self._config.get('abs_kennel_roles_dir'),
-                self._name
+                self._config.get("abs_kennel_roles_dir"), self._name
             )
 
             shutil.copytree(install_path, pup_in_kennel_path)
@@ -257,6 +241,7 @@ class PupDependencies(object):
     """A base representation of a collection of pup dependencies. Either
     python packages or ansible roles.
     """
+
     @staticmethod
     def create_from_dep_file_path(dep_file_path):
         # type: (str) -> PupDependencies
@@ -266,7 +251,7 @@ class PupDependencies(object):
         :param dep_file_path: The path to the dependency file.
         :return: Instance of subclass of `PupDependencies`.
         """
-        file_extension = dep_file_path.split('.')[-1]
+        file_extension = dep_file_path.split(".")[-1]
 
         return _dependency_types_to_classes()[file_extension](dep_file_path)
 
@@ -286,14 +271,10 @@ class PythonDependencies(PupDependencies):
     """Pip packages that must be installed on local machine for this kennel to
     run.
     """
+
     def install(self):
         # type: () -> None
-        pip_cmd = [
-            'pip',
-            'install',
-            '-r',
-            self._dep_file_path
-        ]
+        pip_cmd = ["pip", "install", "-r", self._dep_file_path]
 
         ShellRunner(pip_cmd).run()
 
@@ -302,15 +283,16 @@ class AnsibleDependencies(PupDependencies):
     """Ansible roles that must be installed on local machine for this kennel
     to run.
     """
+
     def install(self):
         # type: () -> None
         ansible_galaxy_cmd = [
-            'ansible-galaxy',
-            'install',
-            '-r',
+            "ansible-galaxy",
+            "install",
+            "-r",
             self._dep_file_path,
-            '-p',
-            self._config.get('abs_kennel_roles_dir')
+            "-p",
+            self._config.get("abs_kennel_roles_dir"),
         ]
 
         ShellRunner(ansible_galaxy_cmd).run()

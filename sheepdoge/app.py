@@ -1,7 +1,7 @@
 """Orchestrates the different `sheepdoge` operations."""
 
 from sheepdoge.config import Config
-from sheepdoge.action import Action # pylint: disable=unused-import
+from sheepdoge.action import Action  # pylint: disable=unused-import
 
 
 class Sheepdoge(object):
@@ -10,6 +10,7 @@ class Sheepdoge(object):
 
     :param action: The Sheepdoge action we're running.
     """
+
     def __init__(self, action, config=None):
         # type: (Action, Config) -> None
         self._action = action
